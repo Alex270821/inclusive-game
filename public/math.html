@@ -2,16 +2,35 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Maths Magiques</title>
+  <title>Maths Magiques – Méthode Singapour</title>
   <link rel="stylesheet" href="math.css">
   <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Château des additions</h1>
-  <canvas id="chateau" width="800" height="500"></canvas>
-  <p id="question">Combien font 6 + 4 ?</p>
-  <input id="answer" type="number" />
-  <button id="verifier">Lancer le sort</button>
+  <header>
+    <h1>Château des additions</h1>
+    <button id="modeDys" aria-label="Activer/Désactiver le mode DYS">🌈 Mode DYS</button>
+  </header>
+
+  <main>
+    <canvas id="chateau" width="900" height="550"></canvas>
+
+    <section id="panneau">
+      <p id="enonce">Le dragon possède <span id="a">6</span> joyaux et en trouve <span id="b">4</span> de plus.</p>
+      <p>Combien en a-t-il maintenant ?</p>
+
+      <div id="zoneCubes">
+        <!-- Cubes générés dynamiquement -->
+      </div>
+
+      <div id="reponse">
+        <input id="inputRep" type="number" min="0" max="100" placeholder="Réponse">
+        <button id="valider">Lancer le sort ✨</button>
+      </div>
+    </section>
+  </main>
+
+  <audio id="sonReussite" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2b8a390674.mp3" preload="auto"></audio>
   <script src="math.js"></script>
 </body>
 </html>
