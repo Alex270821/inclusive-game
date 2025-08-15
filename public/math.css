@@ -1,0 +1,5 @@
+body{font-family:'OpenDyslexic',sans-serif;text-align:center;background:#0f0c29;color:#fff}
+canvas{background:url('https://i.imgur.com/3GfL1hR.png') center/cover}
+.dys{background:#000;color:#ff0;font-size:1.4em}
+#question{font-size:2em;margin:1em}
+input,button{font-size:1.2em;padding:.5em 1em}
