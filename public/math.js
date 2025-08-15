@@ -1,81 +1,79 @@
-// Château + dragon + cubes magiques
-const canvas = document.getElementById('chateau');
-const ctx     = canvas.getContext('2d');
-const input   = document.getElementById('inputRep');
-const valider = document.getElementById('valider');
-const son     = document.getElementById('sonReussite');
-const modeBtn = document.getElementById('modeDys');
+const svg      = document.getElementById('chateau');
+const dragon   = document.getElementById('dragon');
+const zone     = document.getElementById('zoneCubes');
+const plateau  = document.getElementById('plateau');
+const input    = document.getElementById('reponse');
+const valider  = document.getElementById('valider');
+const son      = document.getElementById('sonReussite');
+const modeBtn  = document.getElementById('modeDys');
 
 let a = 6, b = 4;
 
-// Dessin du château
-function drawChateau(){
-  ctx.clearRect(0,0,900,550);
-  ctx.fillStyle='#2f1b69';
-  ctx.fillRect(0,350,900,200);
-  ctx.fillStyle='#8b5e3c';
-  for(let i=0;i<5;i++){
-    ctx.fillRect(100+i*150,250,100,100);
-    ctx.fillRect(120+i*150,200,60,50);
-  }
-  // dragon
-  ctx.fillStyle='#ffd700';
-  ctx.beginPath();
-  ctx.arc(450,200,30,0,Math.PI*2);
-  ctx.fill();
-  ctx.fillStyle='#000';
-  ctx.fillText('🐉',437,207);
-}
-drawChateau();
-
-// Génération des cubes
-function genererCubes(n, conteneur){
-  conteneur.innerHTML='';
+// Génère cubes 3D
+function genererCubes(n, parent){
+  parent.innerHTML='';
   for(let i=0;i<n;i++){
-    const cube=document.createElement('div');
-    cube.className='cube';
-    conteneur.appendChild(cube);
+    const cube = document.createElement('div');
+    cube.className='cube-3d';
+    cube.draggable = true;
+    parent.appendChild(cube);
   }
 }
-genererCubes(a, document.getElementById('zoneCubes'));
-genererCubes(b, document.getElementById('zoneCubes'));
+genererCubes(a, zone);
+genererCubes(b, zone);
+
+// Drag & drop
+zone.addEventListener('dragstart',e=>{
+  if(e.target.classList.contains('cube-3d')){
+    e.dataTransfer.setData('text/plain','cube');
+  }
+});
+plateau.addEventListener('dragover',e=>e.preventDefault());
+plateau.addEventListener('drop',e=>{
+  e.preventDefault();
+  const cube = document.createElement('div');
+  cube.className='cube-3d';
+  plateau.appendChild(cube);
+});
 
 // Validation
 valider.addEventListener('click',()=>{
-  const rep = +input.value;
-  if(rep === a + b){
+  const total = plateau.children.length;
+  if(total === a + b){
     son.play();
-    // Effet étoiles
-    for(let i=0;i<50;i++){
-      const etoile=document.createElement('div');
-      etoile.style.position='absolute';
-      etoile.style.left=Math.random()*900+'px';
-      etoile.style.top=Math.random()*550+'px';
-      etoile.style.width='8px';
-      etoile.style.height='8px';
-      etoile.style.background='#fff700';
-      etoile.style.borderRadius='50%';
-      etoile.style.animation='explose 1s forwards';
-      document.body.appendChild(etoile);
-      setTimeout(()=>etoile.remove(),1000);
+    // animation dragon
+    dragon.style.transform='translate(480px, 200px) scale(3)';
+    // feux d’artifice
+    for(let i=0;i<40;i++){
+      const feu=document.createElement('div');
+      feu.style.position='absolute';
+      feu.style.left=Math.random()*900+'px';
+      feu.style.top=Math.random()*550+'px';
+      feu.style.width='8px';feu.style.height='8px';
+      feu.style.background='#'+Math.floor(Math.random()*16777215).toString(16);
+      feu.style.borderRadius='50%';
+      feu.style.animation='explose 1s forwards';
+      document.body.appendChild(feu);
+      setTimeout(()=>feu.remove(),1000);
     }
-    setTimeout(()=>alert('Explosion magique ! +10 joyaux 🌟'),100);
-    // Nouvelle question
+    setTimeout(()=>alert('Explosion magique ! 🌟'),100);
+    // nouvelle question
     a = Math.floor(Math.random()*9)+1;
     b = Math.floor(Math.random()*9)+1;
-    document.getElementById('a').textContent = a;
-    document.getElementById('b').textContent = b;
-    genererCubes(a+b, document.getElementById('zoneCubes'));
+    document.getElementById('a').textContent=a;
+    document.getElementById('b').textContent=b;
+    plateau.innerHTML='';
+    genererCubes(a+b, zone);
     input.value='';
   }else{
-    alert('Essaye encore !');
+    alert('Compte les cubes sur le plateau.');
   }
 });
 
 // Mode DYS
 modeBtn.addEventListener('click',()=>document.body.classList.toggle('dys'));
 
-// Animation CSS
+// CSS animation
 const style=document.createElement('style');
 style.textContent=`
 @keyframes explose{
