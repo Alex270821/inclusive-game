@@ -1,0 +1,4 @@
+body{font-family:'OpenDyslexic',sans-serif;text-align:center;background:#f0f4f8;}
+.spot{transition:transform .3s;cursor:pointer}
+.spot:hover{transform:scale(1.2)}
+.dys{background:#000;color:#ff0;font-size:1.4em}
