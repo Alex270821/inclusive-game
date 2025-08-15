@@ -1,18 +1,14 @@
-body {
-  font-family: 'OpenDyslexic', sans-serif;
-  background: #f0f4f8;
-  color: #1a202c;
-  transition: all .3s;
-  margin: 2rem;
+:root{--bg:#1e1e2f;--accent:#ff6b6b;--dys-bg:#000;--dys-text:#ff0}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'OpenDyslexic',sans-serif}
+body{background:var(--bg);color:#fff;text-align:center;padding:2rem}
+header{display:flex;justify-content:center;align-items:center;gap:1rem;margin-bottom:2rem}
+button{cursor:pointer;padding:.6rem 1.2rem;border:none;border-radius:8px;background:var(--accent);color:#fff}
+body.dys{background:var(--dys-bg);color:var(--dys-text);font-size:1.4em}
+nav{display:flex;justify-content:center;flex-wrap:wrap;gap:2rem;margin-top:2rem}
+.card{
+  display:block;width:220px;padding:2rem;
+  background:#2b2d42;border-radius:12px;
+  text-decoration:none;color:#fff;font-size:1.2rem;
+  transition:.3s;box-shadow:0 4px 8px rgba(0,0,0,.4)
 }
-.dys {
-  background: #000;
-  color: #ff0;
-  font-size: 1.4em;
-}
-button, input, select {
-  font-family: inherit;
-  font-size: inherit;
-  padding: .75em 1em;
-  margin: .5em 0;
-}
+.card:hover{transform:scale(1.05);background:var(--accent)}
