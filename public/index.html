@@ -2,89 +2,27 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Maths Magiques – Château HD</title>
-  <link rel="stylesheet" href="math.css">
+  <title>IncluGame – Accueil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <h1>Château des additions</h1>
+    <h1>🎮 IncluGame – Jeu éducatif inclusif</h1>
     <button id="modeDys">🌈 Mode DYS</button>
   </header>
 
-  <!-- Château HD SVG -->
-  <svg id="chateau" viewBox="0 0 1000 650">
-    <!-- Ciel dégradé -->
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"  stop-color="#1e3c72"/>
-        <stop offset="100%" stop-color="#2a5298"/>
-      </linearGradient>
-      <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-        <feDropShadow dx="3" dy="3" stdDeviation="2" flood-color="#000" flood-opacity=".4"/>
-      </filter>
-    </defs>
-    <rect width="1000" height="650" fill="url(#sky)"/>
+  <main>
+    <p>Bienvenue ! Choisis ton module :</p>
 
-    <!-- Château détaillé -->
-    <g id="castle">
-      <!-- Donjon central -->
-      <rect x="400" y="300" width="200" height="250" fill="#8b5e3c" filter="url(#shadow)"/>
-      <rect x="420" y="320" width="160" height="200" fill="#a67c52"/>
-      <!-- Tours -->
-      <g>
-        <!-- Tour gauche -->
-        <rect x="300" y="250" width="80" height="300" fill="#8b5e3c" filter="url(#shadow)"/>
-        <rect x="310" y="260" width="60" height="280" fill="#a67c52"/>
-        <polygon points="300,250 340,220 380,250" fill="#d4af37"/>
-        <!-- créneaux -->
-        <g>
-          <rect x="305" y="240" width="10" height="10" fill="#a67c52"/>
-          <rect x="320" y="240" width="10" height="10" fill="#a67c52"/>
-          <rect x="335" y="240" width="10" height="10" fill="#a67c52"/>
-        </g>
-        <!-- Tour droite (symétrique) -->
-        <rect x="620" y="250" width="80" height="300" fill="#8b5e3c" filter="url(#shadow)"/>
-        <rect x="630" y="260" width="60" height="280" fill="#a67c52"/>
-        <polygon points="620,250 660,220 700,250" fill="#d4af37"/>
-        <g>
-          <rect x="625" y="240" width="10" height="10" fill="#a67c52"/>
-          <rect x="640" y="240" width="10" height="10" fill="#a67c52"/>
-          <rect x="655" y="240" width="10" height="10" fill="#a67c52"/>
-        </g>
-      </g>
-      <!-- Dôme central -->
-      <ellipse cx="500" cy="300" rx="60" ry="30" fill="#d4af37"/>
-      <!-- Drapeau -->
-      <rect x="495" y="270" width="10" height="30" fill="#8b0000"/>
-      <polygon points="505,270 505,280 515,275" fill="#8b0000"/>
-    </g>
+    <nav>
+      <a href="math.html"  class="card">Maths Magiques</a>
+      <a href="francais.html" class="card">Français Enchanté</a>
+      <a href="histoire.html" class="card">Histoire Mystérieuse</a>
+    </nav>
+  </main>
 
-    <!-- Dragon HD -->
-    <g id="dragon" transform="translate(480 180) scale(2.2)">
-      <ellipse cx="0" cy="0" rx="22" ry="16" fill="#ffd700"/>
-      <ellipse cx="-8" cy="-5" rx="6" ry="4" fill="#ffcc00"/>
-      <ellipse cx="8" cy="-5" rx="6" ry="4" fill="#ffcc00"/>
-      <circle cx="-5" cy="-6" r="2.5" fill="#000"/>
-      <circle cx="5" cy="-6" r="2.5" fill="#000"/>
-      <path d="M-12 8 Q-8 15 0 12 Q8 15 12 8" stroke="#ffd700" stroke-width="2" fill="none"/>
-      <animateTransform attributeName="transform" type="rotate" values="0 0 0;5 0 0;0 0 0;-5 0 0;0 0 0" dur="2s" repeatCount="indefinite"/>
-    </g>
-  </svg>
-
-  <section id="atelier">
-    <p id="enonce">Pose <span id="a">6</span> cubes bleus et ajoute <span id="b">4</span> cubes rouges.</p>
-
-    <div id="zoneBleue"></div>
-    <div id="zoneRouge"></div>
-    <div id="plateauBarres"></div>
-
-    <input id="inputRep" type="number" min="0" max="100" placeholder="Total ?">
-    <button id="valider">✨ Confirmer</button>
-  </section>
-
-  <audio id="sonReussite" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2b8a390674.mp3" preload="auto"></audio>
-  <audio id="sonDrag" src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d1718a4622.mp3" preload="auto"></audio>
-  <script src="math.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
