@@ -1,7 +1,7 @@
 :root{
   --bg:#0f2027;
-  --cube:#4ecdc4;
-  --cube-border:#fff;
+  --bleu:#0077ff;
+  --rouge:#ff0033;
   --accent:#ffd700;
   --dys-bg:#000;
   --dys-text:#ff0;
@@ -23,17 +23,16 @@ header{display:flex;justify-content:center;align-items:center;gap:1rem;padding:1
 button{cursor:pointer;padding:.6rem 1.2rem;border:none;border-radius:8px;background:var(--accent);color:#000;font-weight:bold}
 svg{display:block;margin:0 auto;border-radius:12px}
 #atelier{margin:1rem auto;max-width:900px}
-#zoneCubes,#plateau{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;min-height:60px;align-items:center;border:2px dashed var(--accent);padding:.5rem;border-radius:10px}
+.zone{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;min-height:60px;border:2px dashed var(--accent);border-radius:10px;padding:.5rem}
 .cube-3d{
   width:50px;height:50px;
-  background:var(--cube);
-  border:2px solid var(--cube-border);
-  border-radius:6px;
+  border-radius:8px;
   cursor:grab;
-  transform-style:preserve-3d;
   box-shadow:0 4px 8px rgba(0,0,0,.4);
   transition:transform .3s;
 }
 .cube-3d:active{cursor:grabbing;transform:scale(1.1)}
+.cube-bleu{background:var(--bleu)}
+.cube-rouge{background:var(--rouge)}
+.barre-10{width:100px;height:20px;background:var(--bleu);border-radius:4px;margin:2px}
 input,button{font-size:1.2rem;padding:.5rem}
-#reponse{margin-top:1rem}
