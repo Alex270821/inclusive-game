@@ -1,97 +1,78 @@
-const svg        = document.getElementById('chateau');
-const dragon     = document.getElementById('dragon');
-const zoneB      = document.getElementById('zoneBleue');
-const zoneR      = document.getElementById('zoneRouge');
-const plateau    = document.getElementById('plateauBarres');
-const input      = document.getElementById('inputRep');
-const valider    = document.getElementById('valider');
-const son        = document.getElementById('sonReussite');
-const sonDrag    = document.getElementById('sonDrag');
+const stock      = document.getElementById('stockBriques');
+const mur        = document.getElementById('mur');
+const totalInput = document.getElementById('total');
+const validerBtn = document.getElementById('valider');
+const dragonImg  = document.getElementById('dragonImg');
+const parole     = document.getElementById('parole');
+const sonPoser   = document.getElementById('sonPoser');
+const sonWin     = document.getElementById('sonReussite');
 const modeBtn    = document.getElementById('modeDys');
 
 let a = 6, b = 4;
 
-// Génère cubes
-function genererCubes(n, parent, color){
+// Génère briques
+function creerBriques(n, couleur, parent){
   for(let i=0;i<n;i++){
-    const cube = document.createElement('div');
-    cube.className = 'cube-3d cube-'+color;
-    cube.draggable = true;
-    parent.appendChild(cube);
+    const brique = document.createElement('div');
+    brique.className = 'brique '+couleur;
+    brique.draggable = true;
+    parent.appendChild(brique);
   }
 }
-genererCubes(a, zoneB, 'bleu');
-genererCubes(b, zoneR, 'rouge');
+creerBriques(a,'bleu',stock);
+creerBriques(b,'rouge',stock);
 
 // Drag & drop
-['dragstart','dragend'].forEach(evt=>{
-  document.addEventListener(evt, e=>{
-    if(e.target.classList.contains('cube-3d')){
-      e.target.style.opacity = evt==='dragstart'?.5:1;
-      if(evt==='dragstart') sonDrag.play();
-    }
-  });
-});
-plateau.addEventListener('dragover',e=>e.preventDefault());
-plateau.addEventListener('drop',e=>{
-  e.preventDefault();
-  const cube = e.target.classList.contains('cube-3d')?e.target:null;
-  if(cube){
-    plateau.appendChild(cube);
-    genererBarres();
+document.addEventListener('dragstart',e=>{
+  if(e.target.classList.contains('brique')){
+    e.dataTransfer.setData('text','brique');
+    sonPoser.play();
   }
+});
+mur.addEventListener('dragover',e=>e.preventDefault());
+mur.addEventListener('drop',e=>{
+  e.preventDefault();
+  const brique = e.target.classList.contains('brique')?e.target:null;
+  if(brique) mur.appendChild(brique);
+  dragonParole('Brique posée ! 🧱');
 });
 
-// Barres de 10
-function genererBarres(){
-  plateau.innerHTML='';
-  const cubes = plateau.querySelectorAll('.cube-3d');
-  const total = cubes.length;
-  const dizaines = Math.floor(total/10);
-  const reste   = total%10;
-  for(let i=0;i<dizaines;i++){
-    const bar=document.createElement('div');
-    bar.className='barre-10';
-    plateau.appendChild(bar);
-  }
-  for(let i=0;i<reste;i++){
-    const cube=document.createElement('div');
-    cube.className='cube-3d cube-bleu';
-    plateau.appendChild(cube);
-  }
+function dragonParole(txt){
+  parole.textContent = txt;
+  dragonImg.style.transform='scale(1.1)';
+  setTimeout(()=>dragonImg.style.transform='scale(1)',500);
 }
 
 // Validation
-valider.addEventListener('click',()=>{
-  const total = plateau.querySelectorAll('.cube-3d').length;
+validerBtn.addEventListener('click',()=>{
+  const total = mur.children.length;
   if(total === a + b){
-    son.play();
-    // Feux d’artifice
-    for(let i=0;i<60;i++){
-      const feu=document.createElement('div');
-      feu.style.position='absolute';
-      feu.style.left=Math.random()*1000+'px';
-      feu.style.top=Math.random()*600+'px';
-      feu.style.width='8px';feu.style.height='8px';
-      feu.style.background='#'+Math.floor(Math.random()*16777215).toString(16);
-      feu.style.borderRadius='50%';
-      feu.style.animation='explose 1.4s forwards';
-      document.body.appendChild(feu);
-      setTimeout(()=>feu.remove(),1400);
+    sonWin.play();
+    dragonParole('Félicitations ! 🎉');
+    // feux d’artifice
+    for(let i=0;i<70;i++){
+      const f=document.createElement('div');
+      f.style.position='absolute';
+      f.style.left=Math.random()*1000+'px';
+      f.style.top=Math.random()*600+'px';
+      f.style.width='8px';f.style.height='8px';
+      f.style.background='#'+Math.floor(Math.random()*16777215).toString(16);
+      f.style.borderRadius='50%';
+      f.style.animation='explose 1.5s forwards';
+      document.body.appendChild(f);
+      setTimeout(()=>f.remove(),1500);
     }
-    setTimeout(()=>alert('Explosion magique ! 🌟'),200);
     // nouvelle question
     a = Math.floor(Math.random()*9)+1;
     b = Math.floor(Math.random()*9)+1;
-    document.querySelector('#a').textContent=a;
-    document.querySelector('#b').textContent=b;
-    zoneB.innerHTML='';zoneR.innerHTML='';
-    plateau.innerHTML='';
-    genererCubes(a, zoneB, 'bleu');
-    genererCubes(b, zoneR, 'rouge');
-    input.value='';
+    document.getElementById('a').textContent=a;
+    document.getElementById('b').textContent=b;
+    stock.innerHTML='';mur.innerHTML='';
+    creerBriques(a,'bleu',stock);
+    creerBriques(b,'rouge',stock);
+    totalInput.value='';
   }else{
-    alert('Compte bien les cubes sur le plateau.');
+    dragonParole('Compte les briques sur le mur.');
   }
 });
 
