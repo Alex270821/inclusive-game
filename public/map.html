@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Carte interactive</title>
+  <link rel="stylesheet" href="map.css">
+  <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>Choisis ta destination</h1>
+  <svg id="map" viewBox="0 0 800 400">
+    <circle cx="200" cy="100" r="50" fill="#FF6B6B" data-place="jungle"   class="spot"/>
+    <circle cx="400" cy="200" r="50" fill="#4ECDC4" data-place="labo"     class="spot"/>
+    <circle cx="600" cy="300" r="50" fill="#45B7D1" data-place="bibli"    class="spot"/>
+  </svg>
+  <script src="map.js"></script>
+</body>
+</html>
