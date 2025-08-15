@@ -6,33 +6,21 @@
   --dys-bg:#000;
   --dys-text:#ff0;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  font-family:'OpenDyslexic',sans-serif;
-  background:var(--bg);
-  color:#fff;
-  text-align:center;
-  transition:.4s;
-}
-body.dys{
-  background:var(--dys-bg);
-  color:var(--dys-text);
-  font-size:1.4em;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'OpenDyslexic',sans-serif}
+body{background:var(--bg);color:#fff;text-align:center;transition:.4s}
+body.dys{background:var(--dys-bg);color:var(--dys-text);font-size:1.4em}
 header{display:flex;justify-content:center;align-items:center;gap:1rem;padding:1rem}
 button{cursor:pointer;padding:.6rem 1.2rem;border:none;border-radius:8px;background:var(--accent);color:#000;font-weight:bold}
-svg{display:block;margin:0 auto;border-radius:12px}
-#atelier{margin:1rem auto;max-width:900px}
-.zone{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;min-height:60px;border:2px dashed var(--accent);border-radius:10px;padding:.5rem}
-.cube-3d{
-  width:50px;height:50px;
-  border-radius:8px;
-  cursor:grab;
-  box-shadow:0 4px 8px rgba(0,0,0,.4);
-  transition:transform .3s;
-}
-.cube-3d:active{cursor:grabbing;transform:scale(1.1)}
-.cube-bleu{background:var(--bleu)}
-.cube-rouge{background:var(--rouge)}
-.barre-10{width:100px;height:20px;background:var(--bleu);border-radius:4px;margin:2px}
-input,button{font-size:1.2rem;padding:.5rem}
+#scene{position:relative;width:1000px;height:600px;margin:0 auto}
+#chateau{background:url('https://i.imgur.com/3GfL1hR.png') center / cover;border-radius:12px}
+#dragon{position:absolute;top:100px;left:50%;transform:translateX(-50%);text-align:center}
+#dragon img{width:180px;animation:vol 3s ease-in-out infinite}
+@keyframes vol{0%{transform:translateY(0)}50%{transform:translateY(-15px)}100%{transform:translateY(0)}}
+#parole{background:#fff3;color:#fff;padding:.5rem 1rem;border-radius:8px;margin-top:.5rem}
+#jeu{margin:2rem auto;max-width:900px}
+#stockBriques,#mur{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;min-height:60px;border:3px dashed var(--accent);border-radius:12px;padding:.5rem}
+.brique{width:60px;height:30px;border-radius:4px;cursor:grab;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:transform .3s}
+.brique:active{cursor:grabbing;transform:scale(1.1)}
+.bleu{background:var(--bleu)}
+.rouge{background:var(--rouge)}
+input,button{font-size:1.3rem;padding:.5rem}
