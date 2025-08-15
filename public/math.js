@@ -1,22 +1,21 @@
-const stock      = document.getElementById('stockBriques');
-const mur        = document.getElementById('mur');
-const totalInput = document.getElementById('total');
-const validerBtn = document.getElementById('valider');
-const dragonImg  = document.getElementById('dragonImg');
-const parole     = document.getElementById('parole');
-const sonPoser   = document.getElementById('sonPoser');
-const sonWin     = document.getElementById('sonReussite');
-const modeBtn    = document.getElementById('modeDys');
+const stock   = document.getElementById('stockBriques');
+const mur     = document.getElementById('mur');
+const totalIn = document.getElementById('total');
+const valider = document.getElementById('valider');
+const dragon  = document.getElementById('dragon');
+const sonPoser = document.getElementById('sonPoser');
+const sonWin   = document.getElementById('sonWin');
+const modeBtn  = document.getElementById('modeDys');
 
 let a = 6, b = 4;
 
 // Génère briques
 function creerBriques(n, couleur, parent){
   for(let i=0;i<n;i++){
-    const brique = document.createElement('div');
-    brique.className = 'brique '+couleur;
-    brique.draggable = true;
-    parent.appendChild(brique);
+    const b=document.createElement('div');
+    b.className='brique '+couleur;
+    b.draggable=true;
+    parent.appendChild(b);
   }
 }
 creerBriques(a,'bleu',stock);
@@ -32,25 +31,18 @@ document.addEventListener('dragstart',e=>{
 mur.addEventListener('dragover',e=>e.preventDefault());
 mur.addEventListener('drop',e=>{
   e.preventDefault();
-  const brique = e.target.classList.contains('brique')?e.target:null;
-  if(brique) mur.appendChild(brique);
-  dragonParole('Brique posée ! 🧱');
+  const b=document.createElement('div');
+  b.className='brique ' + (stock.children.length > 0 ? 'bleu' : 'rouge');
+  mur.appendChild(b);
 });
 
-function dragonParole(txt){
-  parole.textContent = txt;
-  dragonImg.style.transform='scale(1.1)';
-  setTimeout(()=>dragonImg.style.transform='scale(1)',500);
-}
-
 // Validation
-validerBtn.addEventListener('click',()=>{
+valider.addEventListener('click',()=>{
   const total = mur.children.length;
   if(total === a + b){
     sonWin.play();
-    dragonParole('Félicitations ! 🎉');
     // feux d’artifice
-    for(let i=0;i<70;i++){
+    for(let i=0;i<60;i++){
       const f=document.createElement('div');
       f.style.position='absolute';
       f.style.left=Math.random()*1000+'px';
@@ -70,9 +62,9 @@ validerBtn.addEventListener('click',()=>{
     stock.innerHTML='';mur.innerHTML='';
     creerBriques(a,'bleu',stock);
     creerBriques(b,'rouge',stock);
-    totalInput.value='';
+    totalIn.value='';
   }else{
-    dragonParole('Compte les briques sur le mur.');
+    alert('Compte les briques sur le mur.');
   }
 });
 
