@@ -1,8 +1,8 @@
 :root{
-  --bg:#0f0c29;
-  --accent:#ff6b6b;
+  --bg:#0f2027;
   --cube:#4ecdc4;
-  --text:#fff;
+  --cube-border:#fff;
+  --accent:#ffd700;
   --dys-bg:#000;
   --dys-text:#ff0;
 }
@@ -10,7 +10,7 @@
 body{
   font-family:'OpenDyslexic',sans-serif;
   background:var(--bg);
-  color:var(--text);
+  color:#fff;
   text-align:center;
   transition:.4s;
 }
@@ -19,12 +19,21 @@ body.dys{
   color:var(--dys-text);
   font-size:1.4em;
 }
-header{display:flex;justify-content:center;align-items:center;gap:1rem;margin:1rem}
-button{cursor:pointer;padding:.5rem 1rem;border:none;border-radius:8px;background:var(--accent);color:#fff}
-canvas{margin:0 auto;display:block;border:2px solid var(--accent);border-radius:12px}
-#panneau{margin:1rem auto;max-width:500px}
-#zoneCubes{display:flex;justify-content:center;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
-.cube{width:40px;height:40px;background:var(--cube);border-radius:4px;transition:transform .3s}
-.cube:hover{transform:scale(1.2)}
-#reponse{display:flex;justify-content:center;gap:1rem;margin-top:1rem}
-input{padding:.5rem;font-size:1.2rem;width:80px;text-align:center}
+header{display:flex;justify-content:center;align-items:center;gap:1rem;padding:1rem}
+button{cursor:pointer;padding:.6rem 1.2rem;border:none;border-radius:8px;background:var(--accent);color:#000;font-weight:bold}
+svg{display:block;margin:0 auto;border-radius:12px}
+#atelier{margin:1rem auto;max-width:900px}
+#zoneCubes,#plateau{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;min-height:60px;align-items:center;border:2px dashed var(--accent);padding:.5rem;border-radius:10px}
+.cube-3d{
+  width:50px;height:50px;
+  background:var(--cube);
+  border:2px solid var(--cube-border);
+  border-radius:6px;
+  cursor:grab;
+  transform-style:preserve-3d;
+  box-shadow:0 4px 8px rgba(0,0,0,.4);
+  transition:transform .3s;
+}
+.cube-3d:active{cursor:grabbing;transform:scale(1.1)}
+input,button{font-size:1.2rem;padding:.5rem}
+#reponse{margin-top:1rem}
