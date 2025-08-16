@@ -2,74 +2,88 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Château des Briques Magiques</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏰 Château des Briques Magiques</title>
   <link rel="stylesheet" href="math.css">
   <link href="https://fonts.googleapis.com/css2?family=OpenDyslexic&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
     <h1>🏰 Château des Briques Magiques</h1>
-    <button id="modeDys">🌈 Mode DYS</button>
+    <div class="controls">
+      <button id="modeDys" aria-label="Activer le mode dyslexie">🌈 Mode DYS</button>
+      <button id="audioToggle" aria-label="Activer/Désactiver l'audio">🔊 Audio</button>
+      <button id="reset" aria-label="Recommencer le jeu">🔄 Recommencer</button>
+      <button id="teacherMode" aria-label="Mode enseignant">👩‍🏫 Mode Enseignant</button>
+    </div>
   </header>
-
-  <!-- Château + briques 100 % SVG -->
-  <svg id="scene" viewBox="0 0 1000 550">
-    <!-- ciel -->
-    <rect width="1000" height="550" fill="url(#sky)"/>
-    <defs>
-      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"  stop-color="#0f2027"/>
-        <stop offset="100%" stop-color="#203a43"/>
-      </linearGradient>
-      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="3" dy="3" stdDeviation="2" flood-color="#000" flood-opacity=".5"/>
-      </filter>
-    </defs>
-
-    <!-- Château -->
-    <g id="castle" filter="url(#shadow)">
-      <!-- base -->
-      <rect x="400" y="350" width="200" height="150" fill="#8b5e3c"/>
-      <rect x="420" y="370" width="160" height="110" fill="#a67c52"/>
-      <!-- tours -->
-      <rect x="350" y="300" width="50" height="200" fill="#8b5e3c"/>
-      <rect x="600" y="300" width="50" height="200" fill="#8b5e3c"/>
-      <!-- créneaux tours -->
-      <g fill="#6b4c3b">
-        <rect x="355" y="280" width="8" height="10"/><rect x="370" y="280" width="8" height="10"/><rect x="385" y="280" width="8" height="10"/>
-        <rect x="605" y="280" width="8" height="10"/><rect x="620" y="280" width="8" height="10"/><rect x="635" y="280" width="8" height="10"/>
+  <main>
+    <svg id="scene" viewBox="0 0 1000 550" aria-label="Scène du château magique">
+      <rect width="1000" height="550" fill="url(#sky)"/>
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#0f2027"/>
+          <stop offset="100%" stop-color="#203a43"/>
+        </linearGradient>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="3" dy="3" stdDeviation="2" flood-color="#000" flood-opacity=".5"/>
+        </filter>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <!-- Château -->
+      <g id="castle" filter="url(#shadow)">
+        <rect x="400" y="350" width="200" height="150" fill="#8b5e3c"/>
+        <rect x="420" y="370" width="160" height="110" fill="#a67c52"/>
+        <rect x="350" y="300" width="50" height="200" fill="#8b5e3c"/>
+        <rect x="600" y="300" width="50" height="200" fill="#8b5e3c"/>
+        <g fill="#6b4c3b">
+          <rect x="355" y="280" width="8" height="10"/><rect x="370" y="280" width="8" height="10"/><rect x="385" y="280" width="8" height="10"/>
+          <rect x="605" y="280" width="8" height="10"/><rect x="620" y="280" width="8" height="10"/><rect x="635" y="280" width="8" height="10"/>
+        </g>
+        <ellipse cx="500" cy="330" rx="70" ry="35" fill="#d4af37" filter="url(#glow)"/>
+        <rect x="495" y="290" width="10" height="40" fill="#8b0000"/>
+        <polygon points="505 290 505 300 515 295" fill="#8b0000"/>
       </g>
-      <!-- dôme -->
-      <ellipse cx="500" cy="330" rx="70" ry="35" fill="#d4af37"/>
-      <!-- drapeau -->
-      <rect x="495" y="290" width="10" height="40" fill="#8b0000"/>
-      <polygon points="505 290 505 300 515 295" fill="#8b0000"/>
-    </g>
-
-    <!-- Dragon SVG animé -->
-    <g id="dragon" transform="translate(480 180) scale(2)">
-      <ellipse cx="0" cy="0" rx="20" ry="15" fill="#ffd700"/>
-      <ellipse cx="-7" cy="-5" rx="6" ry="4" fill="#ffcc00"/>
-      <ellipse cx="7" cy="-5" rx="6" ry="4" fill="#ffcc00"/>
-      <circle cx="-5" cy="-6" r="2" fill="#000"/>
-      <circle cx="5" cy="-6" r="2" fill="#000"/>
-      <path d="M-12 8 Q-8 14 0 12 Q8 14 12 8" stroke="#ffd700" stroke-width="2" fill="none"/>
-      <animateTransform attributeName="transform" type="rotate" values="0 0 0;3 0 0;0 0 0;-3 0 0;0 0 0" dur="2s" repeatCount="indefinite"/>
-    </g>
-  </svg>
-
-  <section id="jeu">
-    <p id="consigne">Pose <span id="a">6</span> briques <span class="bleu">bleues</span> puis <span id="b">4</span> briques <span class="rouge">rouges</span>.</p>
-
-    <div id="stockBriques"></div>
-    <div id="mur"></div>
-
-    <input id="total" type="number" placeholder="Total ?">
-    <button id="valider">✨ Valider</button>
-  </section>
-
-  <audio id="sonPoser" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d1718a4622.mp3" preload="auto"></audio>
-  <audio id="sonWin" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_2b8a390674.mp3" preload="auto"></audio>
+      <!-- Dragon -->
+      <g id="dragon" transform="translate(480 180) scale(2)">
+        <ellipse cx="0" cy="0" rx="20" ry="15" fill="#ffd700"/>
+        <ellipse cx="-7" cy="-5" rx="6" ry="4" fill="#ffcc00"/>
+        <ellipse cx="7" cy="-5" rx="6" ry="4" fill="#ffcc00"/>
+        <circle cx="-5" cy="-6" r="2" fill="#000"/>
+        <circle cx="5" cy="-6" r="2" fill="#000"/>
+        <path d="M-12 8 Q-8 14 0 12 Q8 14 12 8" stroke="#ffd700" stroke-width="2" fill="none"/>
+        <animateTransform attributeName="transform" type="rotate" values="0 0 0;3 0 0;0 0 0;-3 0 0;0 0 0" dur="2s" repeatCount="indefinite"/>
+      </g>
+    </svg>
+    <section id="jeu" aria-live="polite">
+      <p id="consigne">Le dragon demande <span id="a">6</span> briques <span class="bleu">bleues</span> et <span id="b">4</span> briques <span class="rouge">rouges</span> pour construire le mur du château. Combien de briques au total ?</p>
+      <div id="stockBriques" class="zone" aria-label="Stock de briques"></div>
+      <div id="mur" class="zone" aria-label="Mur du château"></div>
+      <div id="barModel" aria-label="Modèle en barres"></div>
+      <input id="total" type="number" placeholder="Total ?" aria-label="Entrer le total des briques">
+      <button id="valider">✨ Valider</button>
+      <div id="feedback" aria-live="assertive"></div>
+    </section>
+    <section id="teacherPanel" class="hidden">
+      <h2>Mode Enseignant</h2>
+      <p>Progrès : <span id="progress">0/10</span></p>
+      <p>Suggestions : Utilisez des briques physiques en classe pour recréer le défi. Discutez du modèle en barres.</p>
+      <div id="lexique">
+        <h3>Lexique</h3>
+        <p><strong>Addition</strong> : <span id="lexiqueAdd">Joindre des briques (ex. : 6 + 4 = 10).</span></p>
+      </div>
+    </section>
+    <audio id="sonPoser" src="https://cdn.pixabay.com/audio/2022/03/15/audio_d1718a4622.mp3" preload="auto"></audio>
+    <audio id="sonWin" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2b8a390674.mp3" preload="auto"></audio>
+    <audio id="sonError" src="https://cdn.pixabay.com/audio/2022/03/10/audio_6a7b22f7b3.mp3" preload="auto"></audio>
+    <audio id="narration" preload="auto"></audio>
+  </main>
   <script src="math.js"></script>
 </body>
 </html>
