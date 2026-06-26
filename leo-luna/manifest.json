@@ -1,0 +1,21 @@
+{
+  "name": "Le Grimoire de Léo & Luna",
+  "short_name": "Léo & Luna",
+  "description": "Les maths avec Léo & Luna — apprentissage adaptatif et magique pour le CP (et plus). Jeu éducatif inclusif, jouable hors-ligne.",
+  "lang": "fr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#160630",
+  "theme_color": "#160630",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
