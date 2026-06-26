@@ -1,0 +1,14 @@
+# Secrets / clés API — NE JAMAIS committer
+.env
+.env.*
+*.key
+
+# Dépendances
+node_modules/
+
+# Système
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
