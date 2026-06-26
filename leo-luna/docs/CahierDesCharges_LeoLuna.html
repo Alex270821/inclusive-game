@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Léo & Luna — Cahier des Charges Plateforme EdTech</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --violet: #7c3aed; --violet-c: #a78bfa; --violet-d: #4c1d95;
+    --or: #f59e0b; --or-c: #fcd34d;
+    --vert: #10b981; --vert-c: #6ee7b7;
+    --rose: #ec4899; --rose-c: #f9a8d4;
+    --bleu: #3b82f6; --bleu-c: #93c5fd;
+    --rouge: #ef4444;
+    --fond: #faf9ff;
+    --texte: #1e1b4b;
+    --gris: #6b7280;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
+  body { font-family: 'Inter', sans-serif; background: var(--fond); color: var(--texte); overflow-x: hidden; }
+
+  /* ========== PARTICULES ========== */
+  #canvas-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1s; }
+
+  /* ========== COUVERTURE ========== */
+  .cover {
+    min-height: 100vh; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #0f0528 0%, #1e0a4a 30%, #0d1f5c 70%, #0a1628 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 5rem 2rem 4rem;
+  }
+
+  .cover-stars { position: absolute; inset: 0; pointer-events: none; }
+  .star {
+    position: absolute; border-radius: 50%;
+    background: white; animation: twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle { 0%,100%{opacity:.2;transform:scale(.8)} 50%{opacity:1;transform:scale(1.3)} }
+
+  .cover-orbs {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.35;
+    animation: orbFloat ease-in-out infinite;
+  }
+  @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.05)} }
+
+  .cover-badge-top {
+    background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.4);
+    color: #c4b5fd; padding: 0.5rem 1.4rem; border-radius: 50px;
+    font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 2.5rem; position: relative; z-index: 2;
+    animation: fadeDown 0.8s ease 0.2s both;
+  }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+
+  .cover-mascots {
+    display: flex; gap: 1.5rem; align-items: flex-end; justify-content: center;
+    margin-bottom: 1.5rem; position: relative; z-index: 2;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+  .mascot {
+    width: 110px; height: 110px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem; border: 3px solid;
+    animation: mascotBounce ease-in-out infinite;
+    box-shadow: 0 0 0 6px rgba(255,255,255,0.06), 0 20px 40px rgba(0,0,0,0.4);
+  }
+  .mascot.leo  { border-color: rgba(167,139,250,0.6); background: rgba(124,58,237,0.25); animation-duration: 3.2s; }
+  .mascot.luna { border-color: rgba(249,168,212,0.6); background: rgba(236,72,153,0.25); animation-duration: 2.8s; animation-delay: 0.4s; }
+  @keyframes mascotBounce { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-14px) rotate(2deg)} }
+
+  .cover-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(3rem, 8vw, 6rem);
+    color: white;
+    text-shadow: 0 0 60px rgba(167,139,250,0.5);
+    line-height: 1; margin-bottom: 0.5rem;
+    position: relative; z-index: 2;
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+
+  .cover-title .amp { color: #c4b5fd; }
+  .cover-title .luna-col { color: var(--rose-c); }
+
+  .cover-sub {
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    color: rgba(196,181,253,0.8); margin-bottom: 2.5rem;
+    font-weight: 400; position: relative; z-index: 2;
+    animation: fadeUp 0.8s ease 0.6s both;
+  }
+
+  .cover-tags {
+    display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center;
+    position: relative; z-index: 2; margin-bottom: 3.5rem;
+    animation: fadeUp 0.8s ease 0.7s both;
+  }
+  .ctag {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.9); padding: 0.55rem 1.3rem;
+    border-radius: 50px; font-size: 0.88rem; font-weight: 600;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .ctag:hover { background: rgba(255,255,255,0.16); transform: translateY(-2px); }
+
+  .cover-scroll {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    z-index: 2; color: rgba(255,255,255,0.4); font-size: 0.8rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+    animation: fadeIn 1s ease 2s both;
+  }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .scroll-arrow { width: 2px; height: 32px; background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent); border-radius: 2px; }
+
+  .cover-meta {
+    position: relative; z-index: 2;
+    border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;
+    color: rgba(255,255,255,0.35); font-size: 0.8rem; max-width: 500px;
+    animation: fadeUp 0.8s ease 0.9s both;
+  }
+
+  /* ========== NAVIGATION ========== */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(124,58,237,0.15);
+    padding: 0 1.5rem;
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto; box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.12); }
+
+  .nav-logo {
+    font-family: 'Fredoka One'; color: var(--violet); font-size: 1.15rem;
+    margin-right: 1rem; white-space: nowrap; display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.8rem 0;
+  }
+
+  nav a {
+    color: var(--gris); text-decoration: none;
+    padding: 1rem 0.9rem; font-size: 0.8rem; font-weight: 600;
+    white-space: nowrap; border-bottom: 3px solid transparent;
+    transition: all 0.2s; position: relative;
+  }
+  nav a:hover, nav a.active { color: var(--violet); border-bottom-color: var(--violet); }
+
+  /* ========== REVEAL ========== */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-left  { opacity: 0; transform: translateX(-30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal-right { opacity: 0; transform: translateX(30px);  transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+  /* ========== LAYOUT ========== */
+  .container { max-width: 1120px; margin: 0 auto; padding: 5rem 2rem; }
+  section { margin-bottom: 6rem; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 1.2rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    background: linear-gradient(135deg, var(--violet), var(--violet-c));
+    color: white; font-family: 'Fredoka One'; font-size: 1.5rem;
+    width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 20px rgba(124,58,237,0.35);
+  }
+
+  .section-title-wrap { border-bottom: 3px solid; padding-bottom: 0.8rem; flex: 1; }
+  .section-title-wrap.violet { border-color: var(--violet); }
+  .section-title-wrap.or     { border-color: var(--or); }
+  .section-title-wrap.rose   { border-color: var(--rose); }
+  .section-title-wrap.vert   { border-color: var(--vert); }
+  .section-title-wrap.bleu   { border-color: var(--bleu); }
+
+  h2 { font-family: 'Fredoka One'; font-size: clamp(1.7rem, 3.5vw, 2.4rem); color: var(--texte); }
+  h2 .h2-sub { display: block; font-family: 'Inter'; font-size: 0.88rem; color: var(--gris); font-weight: 500; margin-top: 0.2rem; }
+
+  h3 { font-size: 1.25rem; font-weight: 800; color: var(--violet); margin: 2.5rem 0 1.2rem; }
+  h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+
+  p { color: #374151; margin-bottom: 1rem; line-height: 1.75; }
+
+  /* ========== HERO INTRO ========== */
+  .hero-intro {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+    align-items: center; margin-bottom: 3rem;
+  }
+  @media (max-width: 700px) { .hero-intro { grid-template-columns: 1fr; } }
+
+  .hero-intro p { font-size: 1.1rem; font-weight: 500; line-height: 1.85; color: #374151; }
+
+  .hero-visual {
+    background: linear-gradient(135deg, #0f0528, #1e0a4a);
+    border-radius: 24px; padding: 2.5rem; text-align: center;
+    border: 1px solid rgba(124,58,237,0.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(124,58,237,0.15);
+  }
+
+  .duo-chars { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 1.2rem; }
+  .duo-char {
+    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  }
+  .duo-char .emoji { font-size: 3rem; animation: mascotBounce ease-in-out infinite; }
+  .duo-char.leo-c  .emoji { animation-duration: 3s; }
+  .duo-char.luna-c .emoji { animation-duration: 2.6s; animation-delay: 0.3s; }
+  .duo-char span { font-size: 0.85rem; font-weight: 700; }
+  .duo-char.leo-c  span { color: #c4b5fd; }
+  .duo-char.luna-c span { color: var(--rose-c); }
+
+  .hero-visual p { color: rgba(255,255,255,0.65); font-size: 0.88rem; margin: 0; }
+
+  /* ========== STATS ANIMÉES ========== */
+  .stats-band {
+    background: linear-gradient(135deg, #0f0528, #1a0a3e, #0d1f5c);
+    border-radius: 24px; padding: 3rem 2rem;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 2rem; margin: 2.5rem 0; color: white; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    overflow: hidden; position: relative;
+  }
+  .stats-band::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(124,58,237,0.2) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 30%, rgba(236,72,153,0.15) 0%, transparent 50%);
+  }
+  .stat-item { position: relative; z-index: 1; }
+  .stat-num {
+    font-family: 'Fredoka One'; font-size: 2.8rem; color: #c4b5fd;
+    display: block; line-height: 1;
+  }
+  .stat-num.rose-num { color: var(--rose-c); }
+  .stat-label { font-size: 0.82rem; color: rgba(255,255,255,0.6); margin-top: 0.3rem; }
+
+  /* ========== CARDS ========== */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 1.2rem; }
+
+  .card {
+    background: white; border-radius: 20px; padding: 1.8rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06); border: 1px solid #f0f0f8;
+    transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s;
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+  .card.violet { border-top: 4px solid var(--violet); }
+  .card.or     { border-top: 4px solid var(--or); }
+  .card.vert   { border-top: 4px solid var(--vert); }
+  .card.bleu   { border-top: 4px solid var(--bleu); }
+  .card.rose   { border-top: 4px solid var(--rose); }
+
+  .card-icon { font-size: 2.4rem; margin-bottom: 0.8rem; }
+  .card h4   { font-size: 1.05rem; color: var(--texte); margin-bottom: 0.5rem; }
+  .card p    { font-size: 0.87rem; color: var(--gris); margin: 0; line-height: 1.6; }
+
+  /* ========== GENDER INCLUSIVITY FEATURE ========== */
+  .gender-banner {
+    background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(236,72,153,0.08));
+    border: 2px solid;
+    border-image: linear-gradient(135deg, var(--violet), var(--rose)) 1;
+    border-radius: 20px; padding: 2.5rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;
+    margin: 2rem 0;
+  }
+  @media(max-width:600px){ .gender-banner { grid-template-columns: 1fr; } }
+
+  .char-card {
+    background: white; border-radius: 18px; padding: 2rem; text-align: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08); border: 3px solid;
+    transition: transform 0.3s;
+  }
+  .char-card:hover { transform: scale(1.03); }
+  .char-card.leo-card   { border-color: var(--violet); }
+  .char-card.luna-card  { border-color: var(--rose); }
+  .char-card .big-emoji { font-size: 4rem; display: block; margin-bottom: 0.8rem; animation: mascotBounce ease-in-out infinite; }
+  .char-card.leo-card  .big-emoji { animation-duration: 3.2s; }
+  .char-card.luna-card .big-emoji { animation-duration: 2.8s; animation-delay: 0.4s; }
+  .char-card h4 { font-family: 'Fredoka One'; font-size: 1.6rem; margin-bottom: 0.3rem; }
+  .char-card.leo-card  h4 { color: var(--violet); }
+  .char-card.luna-card h4 { color: var(--rose); }
+  .char-card p { font-size: 0.85rem; color: var(--gris); margin: 0; }
+
+  /* ========== TABLE ========== */
+  .table-wrap { overflow-x: auto; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+  table { width: 100%; border-collapse: collapse; background: white; font-size: 0.88rem; min-width: 600px; }
+  th { background: linear-gradient(135deg, var(--violet), var(--violet-d)); color: white; padding: 1rem 1.2rem; text-align: left; font-weight: 700; font-size: 0.85rem; }
+  td { padding: 0.9rem 1.2rem; border-bottom: 1px solid #f3f4f6; color: #374151; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #faf5ff; }
+  .oui  { color: var(--vert); font-weight: 700; }
+  .non  { color: #dc2626; font-weight: 700; }
+  .nous { color: var(--violet); font-weight: 700; }
+  .nous-row td { background: #faf5ff !important; }
+
+  /* ========== TAGS ========== */
+  .tag { display: inline-block; padding: 0.22rem 0.7rem; border-radius: 50px; font-size: 0.77rem; font-weight: 700; margin: 0.15rem; }
+  .tv { background: #ede9fe; color: var(--violet); }
+  .tg { background: #d1fae5; color: #059669; }
+  .to { background: #fef3c7; color: #d97706; }
+  .tb { background: #dbeafe; color: #1d4ed8; }
+  .tr { background: #fee2e2; color: #dc2626; }
+  .tp { background: #fce7f3; color: #be185d; }
+
+  /* ========== ALERT ========== */
+  .alert { border-radius: 16px; padding: 1.2rem 1.6rem; margin: 1.5rem 0; display: flex; gap: 1rem; align-items: flex-start; font-size: 0.9rem; }
+  .alert-v { background: #ede9fe; border-left: 5px solid var(--violet); color: #4c1d95; }
+  .alert-o { background: #fef3c7; border-left: 5px solid var(--or);     color: #78350f; }
+  .alert-g { background: #d1fae5; border-left: 5px solid var(--vert);   color: #065f46; }
+  .alert-p { background: #fce7f3; border-left: 5px solid var(--rose);   color: #9d174d; }
+  .alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: -0.1rem; }
+
+  /* ========== IA FLOW ========== */
+  .ia-flow {
+    background: linear-gradient(150deg, #0a0220, #140535, #0d1f5c);
+    border-radius: 24px; padding: 2.5rem;
+    border: 1px solid rgba(124,58,237,0.25);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .ia-step { display: flex; gap: 1.2rem; margin-bottom: 2rem; position: relative; }
+  .ia-step:not(:last-child)::after {
+    content: ''; position: absolute; left: 17px; top: 40px; bottom: -8px;
+    width: 2px; background: linear-gradient(to bottom, rgba(124,58,237,0.5), rgba(236,72,153,0.3));
+  }
+  .ia-num {
+    width: 36px; height: 36px; flex-shrink: 0;
+    background: rgba(124,58,237,0.3); border: 2px solid rgba(124,58,237,0.6);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'Fredoka One'; font-size: 1rem; color: #c4b5fd;
+  }
+  .ia-content h5 { color: #c4b5fd; font-size: 0.98rem; margin-bottom: 0.3rem; }
+  .ia-content p  { color: rgba(255,255,255,0.6); font-size: 0.86rem; margin: 0; line-height: 1.6; }
+
+  /* ========== PROGRAMME MODULES ========== */
+  .prog-year { margin-bottom: 2rem; }
+  .prog-year-title {
+    font-family: 'Fredoka One'; font-size: 1.05rem; padding: 0.6rem 1.2rem;
+    border-radius: 50px; display: inline-flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 1rem; color: white;
+  }
+  .mod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.8rem; }
+  .mod-card { background: white; border-radius: 12px; padding: 1rem 1.1rem; border-left: 5px solid; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.2s; }
+  .mod-card:hover { transform: translateY(-3px); }
+  .mod-card .mc-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.25rem; }
+  .mod-card h5 { font-size: 0.9rem; font-weight: 700; color: var(--texte); margin-bottom: 0.2rem; }
+  .mod-card p  { font-size: 0.78rem; color: var(--gris); margin: 0; }
+
+  /* ========== PRICING ========== */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.5rem; }
+  .pc {
+    background: white; border-radius: 24px; padding: 2.2rem 1.8rem;
+    text-align: center; border: 2px solid #e5e7eb;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06); position: relative; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .pc:hover { transform: translateY(-6px); box-shadow: 0 16px 50px rgba(0,0,0,0.12); }
+  .pc.featured {
+    border-color: var(--violet);
+    box-shadow: 0 8px 40px rgba(124,58,237,0.2);
+  }
+  .pc.featured::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--violet), var(--rose), var(--violet));
+    animation: shimmer 2.5s linear infinite;
+    background-size: 200% 100%;
+  }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  .pc-badge { position: absolute; top: 1rem; right: 1rem; background: var(--violet); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.7rem; border-radius: 50px; }
+  .pc-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+  .pc-name { font-family: 'Fredoka One'; font-size: 1.3rem; color: var(--texte); }
+  .pc-price { font-family: 'Fredoka One'; font-size: 2.6rem; color: var(--violet); margin: 0.8rem 0 0.2rem; line-height: 1; }
+  .pc-price .sub { font-size: 1rem; color: var(--gris); font-family: 'Inter'; }
+  .pc-alt { font-size: 0.8rem; color: var(--gris); margin-bottom: 1.2rem; }
+  .pc ul { text-align: left; list-style: none; }
+  .pc li { font-size: 0.87rem; color: #374151; padding: 0.3rem 0; }
+  .pc li::before { content: '✓ '; color: var(--vert); font-weight: 700; }
+
+  /* ========== TIMELINE ========== */
+  .timeline { position: relative; padding-left: 3rem; }
+  .timeline::before {
+    content: ''; position: absolute; left: 1.1rem; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(to bottom, var(--violet), var(--rose), var(--bleu));
+    border-radius: 3px;
+  }
+  .tl-item { position: relative; margin-bottom: 2.5rem; }
+  .tl-dot {
+    position: absolute; left: -2.1rem; top: 0.4rem;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 3px solid white; display: flex; align-items: center; justify-content: center;
+    font-family: 'Fredoka One'; font-size: 0.82rem; color: white;
+    box-shadow: 0 0 0 3px;
+  }
+  .tl-dot.done   { background: var(--vert);   box-shadow-color: var(--vert);   box-shadow: 0 0 0 3px var(--vert); }
+  .tl-dot.violet { background: var(--violet); box-shadow: 0 0 0 3px var(--violet); }
+  .tl-dot.rose   { background: var(--rose);   box-shadow: 0 0 0 3px var(--rose); }
+  .tl-dot.bleu   { background: var(--bleu);   box-shadow: 0 0 0 3px var(--bleu); }
+  .tl-dot.or     { background: var(--or);     box-shadow: 0 0 0 3px var(--or); }
+  .tl-phase { font-size: 0.73rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--violet); margin-bottom: 0.2rem; }
+  .tl-title { font-family: 'Fredoka One'; font-size: 1.25rem; color: var(--texte); margin-bottom: 0.4rem; }
+  .tl-desc  { font-size: 0.88rem; color: var(--gris); line-height: 1.65; margin-bottom: 0.6rem; }
+
+  /* ========== KPI ========== */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+  .kpi-card { background: white; border-radius: 16px; padding: 1.5rem; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-bottom: 4px solid var(--violet); }
+  .kpi-card.or   { border-bottom-color: var(--or); }
+  .kpi-card.rose { border-bottom-color: var(--rose); }
+  .kpi-card.vert { border-bottom-color: var(--vert); }
+  .kpi-val { font-family: 'Fredoka One'; font-size: 2.4rem; color: var(--violet); display: block; }
+  .kpi-card.or   .kpi-val { color: var(--or); }
+  .kpi-card.rose .kpi-val { color: var(--rose); }
+  .kpi-card.vert .kpi-val { color: var(--vert); }
+  .kpi-label { font-size: 0.82rem; color: var(--gris); font-weight: 600; }
+  .kpi-horizon { font-size: 0.72rem; color: var(--violet-c); margin-top: 0.2rem; }
+
+  /* ========== PROG BARS ========== */
+  .prog-bar-wrap { margin: 0.8rem 0; }
+  .pb-label { display: flex; justify-content: space-between; font-size: 0.83rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--texte); }
+  .pb-track { background: #e5e7eb; border-radius: 50px; height: 10px; overflow: hidden; }
+  .pb-fill { height: 100%; border-radius: 50px; width: 0; transition: width 1.2s cubic-bezier(.34,1.56,.64,1); }
+
+  /* ========== CONCLUSION ========== */
+  .conclusion {
+    background: linear-gradient(135deg, #0f0528, #1e0a4a, #0d1f5c);
+    border-radius: 28px; padding: 4rem 2.5rem; text-align: center; color: white;
+    position: relative; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+  }
+  .conclusion::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(236,72,153,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 30%, rgba(124,58,237,0.2) 0%, transparent 50%);
+  }
+  .conclusion > * { position: relative; z-index: 1; }
+  .conclusion h2 { font-family: 'Fredoka One'; font-size: 2.2rem; color: white; margin-bottom: 1rem; }
+  .conclusion p  { color: rgba(196,181,253,0.8); max-width: 600px; margin: 0 auto 2rem; font-size: 1.05rem; }
+  .conc-tags { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; }
+  .conc-tag {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: white; padding: 0.7rem 1.5rem; border-radius: 50px; font-weight: 700; font-size: 0.9rem;
+  }
+
+  /* ========== FOOTER ========== */
+  footer { background: #0a0220; color: rgba(255,255,255,0.4); text-align: center; padding: 3rem 2rem; font-size: 0.82rem; line-height: 2; }
+  footer strong { color: rgba(196,181,253,0.8); }
+
+  /* ========== PROFILS BAND ========== */
+  .profils-band {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem; margin: 2rem 0;
+  }
+  .profil-bloc {
+    border-radius: 20px; padding: 1.8rem;
+    border: 2px solid; position: relative; overflow: hidden;
+    transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), box-shadow 0.25s;
+  }
+  .profil-bloc:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+  .dys-bloc   { background: linear-gradient(135deg,#fce7f3,#fff); border-color: var(--rose); }
+  .hpi-bloc   { background: linear-gradient(135deg,#fef3c7,#fff); border-color: var(--or); }
+  .retard-bloc{ background: linear-gradient(135deg,#d1fae5,#fff); border-color: var(--vert); }
+  .profil-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+  .profil-emoji { font-size: 2.4rem; }
+  .profil-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gris); }
+  .profil-titre { font-family: 'Fredoka One'; font-size: 1.3rem; color: var(--texte); }
+  .profil-desc  { font-size: 0.86rem; color: var(--gris); line-height: 1.6; margin-bottom: 1rem; }
+  .profil-tags  { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .ptag       { background: rgba(236,72,153,0.12); color: #9d174d;  padding: 0.25rem 0.7rem; border-radius: 50px; font-size: 0.75rem; font-weight: 700; }
+  .ptag-or    { background: rgba(245,158,11,0.15); color: #92400e; }
+  .ptag-vert  { background: rgba(16,185,129,0.15); color: #065f46; }
+
+  @media print {
+    nav, #canvas-bg { display: none; }
+    .cover { min-height: auto; padding: 3rem 2rem; }
+    section { page-break-inside: avoid; }
+    .reveal, .reveal-left, .reveal-right { opacity: 1 !important; transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<!-- ======= COUVERTURE ======= -->
+<div class="cover">
+  <div class="cover-stars" id="cover-stars"></div>
+  <div class="cover-orbs">
+    <div class="orb" style="width:500px;height:500px;background:rgba(124,58,237,0.3);top:-150px;left:-150px;animation-duration:8s"></div>
+    <div class="orb" style="width:400px;height:400px;background:rgba(236,72,153,0.25);bottom:-100px;right:-100px;animation-duration:10s;animation-delay:2s"></div>
+    <div class="orb" style="width:250px;height:250px;background:rgba(59,130,246,0.2);top:50%;right:20%;animation-duration:6s;animation-delay:1s"></div>
+  </div>
+
+  <div class="cover-badge-top">✦ CAHIER DES CHARGES — VERSION 1.0 ✦</div>
+
+  <div class="cover-mascots">
+    <div class="mascot leo">🐰</div>
+    <div style="font-family:'Fredoka One';font-size:2rem;color:rgba(255,255,255,0.3);align-self:center">&</div>
+    <div class="mascot luna">🐇</div>
+  </div>
+
+  <h1 class="cover-title">
+    Léo <span class="amp">&</span> <span class="luna-col">Luna</span>
+  </h1>
+  <p class="cover-sub">Plateforme d'apprentissage adaptatif par l'IA · Maternelle → CM2</p>
+
+  <div class="cover-tags">
+    <span class="ctag">🇫🇷 Programme Éducation Nationale</span>
+    <span class="ctag">🤖 IA Adaptative · Claude</span>
+    <span class="ctag">👧👦 Inclusif garçons & filles</span>
+    <span class="ctag">♿ Certifié DYS</span>
+    <span class="ctag">🏆 Standard DreamBox · En mieux</span>
+  </div>
+
+  <div class="cover-meta">
+    <strong>Document confidentiel · Juin 2026</strong><br>
+    Propriété intellectuelle protégée · Ne pas diffuser sans autorisation
+  </div>
+
+  <div class="cover-scroll">
+    <span>Défiler</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<!-- ======= NAVIGATION ======= -->
+<nav id="main-nav">
+  <div class="nav-logo">🐰🐇 Léo & Luna</div>
+  <a href="#vision">Vision</a>
+  <a href="#inclusivite">Inclusivité</a>
+  <a href="#marche">Marché</a>
+  <a href="#fonctionnalites">Fonctionnalités</a>
+  <a href="#pedagogie">Pédagogie</a>
+  <a href="#ia">IA</a>
+  <a href="#technique">Technique</a>
+  <a href="#design">Design DYS</a>
+  <a href="#dashboard">Dashboard</a>
+  <a href="#modele">Modèle éco.</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#kpis">KPIs</a>
+</nav>
+
+<div class="container">
+
+  <!-- SECTION 1 — VISION -->
+  <section id="vision">
+    <div class="section-header reveal">
+      <div class="section-num">1</div>
+      <div class="section-title-wrap violet">
+        <h2>Vision & Mission
+          <span class="h2-sub">Pourquoi Léo & Luna vont changer l'éducation primaire française</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="hero-intro">
+      <div class="reveal-left">
+        <p>Créer la première plateforme d'apprentissage adaptative française pour enfants de <strong>4 à 11 ans</strong> — aussi engageante qu'un jeu vidéo, aussi précise qu'un professeur particulier, aussi accessible qu'une bibliothèque.</p>
+        <p>Avec <strong>Léo</strong> pour les garçons et <strong>Luna</strong> pour les filles (ou l'inverse !), chaque enfant choisit son compagnon de voyage. Deux personnages, une seule ambition : <em>que chaque enfant ait envie d'apprendre.</em></p>
+      </div>
+      <div class="reveal-right">
+        <div class="hero-visual">
+          <div class="duo-chars">
+            <div class="duo-char leo-c">
+              <span class="emoji">🐰</span>
+              <span>Léo</span>
+              <small style="color:rgba(196,181,253,0.5);font-size:0.72rem">Le curieux</small>
+            </div>
+            <div class="duo-char luna-c">
+              <span class="emoji">🐇</span>
+              <span>Luna</span>
+              <small style="color:rgba(249,168,212,0.5);font-size:0.72rem">L'aventurière</small>
+            </div>
+          </div>
+          <p>L'enfant choisit son personnage à la création du profil. Les deux personnages ont les mêmes super-pouvoirs !</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-p reveal">
+      <span class="alert-icon">✨</span>
+      <div><strong>Le constat :</strong> 30% des élèves quittent le CP avec des lacunes en mathématiques. Les filles se découragent 2× plus souvent face aux plateformes à personnage masculin. <strong>Léo & Luna résolvent les deux problèmes d'un coup.</strong></div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card violet reveal" style="transition-delay:0.1s">
+        <div class="card-icon">🎯</div>
+        <h4>Mission</h4>
+        <p>Que chaque enfant français ait un compagnon IA qui apprend à son rythme, sans pression, avec joie — et progresse plus vite que la moyenne de la classe.</p>
+      </div>
+      <div class="card rose reveal" style="transition-delay:0.2s">
+        <div class="card-icon">🌍</div>
+        <h4>Vision 5 ans</h4>
+        <p>Devenir le Duolingo des mathématiques françaises : 500 000 élèves actifs, présent dans 500 écoles, référencé Éducation Nationale.</p>
+      </div>
+      <div class="card vert reveal" style="transition-delay:0.3s">
+        <div class="card-icon">❤️</div>
+        <h4>Valeurs</h4>
+        <p>Bienveillance · Zéro jugement · Inclusivité totale (genres, DYS, niveaux) · Données privées par défaut · Enfant avant tout.</p>
+      </div>
+    </div>
+
+    <div class="stats-band reveal">
+      <div class="stat-item">
+        <span class="stat-num counter" data-target="12">0</span><span class="stat-num">M</span>
+        <div class="stat-label">Élèves primaire en France</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num counter" data-target="9000">0</span>
+        <div class="stat-label">Écoles primaires privées</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num counter rose-num" data-target="30">0</span><span class="stat-num rose-num">%</span>
+        <div class="stat-label">Élèves en difficulté CP/CE1</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num counter" data-target="4.5">0</span><span class="stat-num">Md€</span>
+        <div class="stat-label">Marché EdTech France 2026</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num counter rose-num" data-target="62">0</span><span class="stat-num rose-num">%</span>
+        <div class="stat-label">Croissance EdTech post-Covid</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 — INCLUSIVITÉ -->
+  <section id="inclusivite">
+    <div class="section-header reveal">
+      <div class="section-num">2</div>
+      <div class="section-title-wrap rose">
+        <h2>Inclusivité & Double Personnage
+          <span class="h2-sub">Pourquoi deux héros font toute la différence</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="alert alert-p reveal">
+      <span class="alert-icon">🔬</span>
+      <div><strong>Étude Stanford 2024 :</strong> Les filles obtiennent des scores 23% plus élevés sur des plateformes avec un personnage féminin ou au choix. L'identification au personnage est un facteur clé d'engagement chez les 5-10 ans.</div>
+    </div>
+
+    <div class="gender-banner reveal">
+      <div class="char-card leo-card">
+        <span class="big-emoji">🐰</span>
+        <h4>Léo</h4>
+        <p>Le lapin détective curieux et aventurier. Chapeau violet, loupe magique, toujours prêt à résoudre des mystères de mathématiques.</p>
+        <br>
+        <span class="tag tv">Violet & Or</span>
+        <span class="tag tv">Détective</span>
+        <span class="tag tv">Curieux</span>
+      </div>
+      <div class="char-card luna-card">
+        <span class="big-emoji">🐇</span>
+        <h4>Luna</h4>
+        <p>La lapine scientifique brillante et créative. Étoiles dans les yeux, baguette magique, exploratrice de l'univers des nombres.</p>
+        <br>
+        <span class="tag tp">Rose & Cyan</span>
+        <span class="tag tp">Scientifique</span>
+        <span class="tag tp">Créative</span>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card violet reveal">
+        <div class="card-icon">🎮</div>
+        <h4>Choix au démarrage</h4>
+        <p>À la création du profil, l'enfant choisit Léo ou Luna. Le choix peut être changé à tout moment. Les garçons peuvent choisir Luna, les filles Léo — zéro jugement.</p>
+      </div>
+      <div class="card rose reveal" style="transition-delay:0.15s">
+        <div class="card-icon">👗</div>
+        <h4>Personnalisation de l'avatar</h4>
+        <p>Chaque personnage peut être customisé : chapeaux, couleurs, accessoires débloqués par les étoiles gagnées. L'enfant crée SON Léo ou SA Luna.</p>
+      </div>
+      <div class="card vert reveal" style="transition-delay:0.3s">
+        <div class="card-icon">📚</div>
+        <h4>Histoires inclusives</h4>
+        <p>Les problèmes de maths mettent en scène les deux personnages ensemble. Les filles comme les garçons sont héros des aventures mathématiques.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 — MARCHÉ -->
+  <section id="marche">
+    <div class="section-header reveal">
+      <div class="section-num">3</div>
+      <div class="section-title-wrap or">
+        <h2>Analyse du Marché & Concurrence
+          <span class="h2-sub">Un marché à conquérir, une position unique</span>
+        </h2>
+      </div>
+    </div>
+
+    <h3>⚔️ Benchmark concurrentiel</h3>
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr><th>Plateforme</th><th>Pays</th><th>IA Adapt.</th><th>Programme FR</th><th>DYS</th><th>Filles=Garçons</th><th>Gamification</th><th>Prix</th></tr>
+        </thead>
+        <tbody>
+          <tr class="nous-row">
+            <td><strong>🐰🐇 Léo & Luna</strong></td>
+            <td class="nous">🇫🇷</td>
+            <td class="oui">✅ Claude</td>
+            <td class="oui">✅ Stanislas</td>
+            <td class="oui">✅ Natif</td>
+            <td class="oui">✅ 2 héros</td>
+            <td class="oui">✅ Magique</td>
+            <td class="nous">9€/mois</td>
+          </tr>
+          <tr><td>DreamBox</td><td>🇺🇸</td><td class="oui">✅</td><td class="non">❌</td><td class="non">❌</td><td class="non">❌</td><td class="oui">✅</td><td>25$/élève/an</td></tr>
+          <tr><td>Khan Academy Kids</td><td>🇺🇸</td><td class="non">⚠️</td><td class="non">❌</td><td class="non">❌</td><td class="oui">✅</td><td class="oui">✅</td><td>Gratuit</td></tr>
+          <tr><td>Mathia</td><td>🇫🇷</td><td class="oui">✅</td><td class="oui">✅</td><td class="non">❌</td><td class="non">❌</td><td class="non">❌ Ennuyeux</td><td>Écoles only</td></tr>
+          <tr><td>Prodigy Math</td><td>🇨🇦</td><td class="oui">✅</td><td class="non">❌</td><td class="non">❌</td><td class="non">⚠️</td><td class="oui">✅✅</td><td>Freemium</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-g reveal">
+      <span class="alert-icon">🏆</span>
+      <div><strong>Avantage unique :</strong> Léo & Luna est la seule plateforme à combiner IA Claude, programme Stanislas/Alsacienne, double personnage inclusif, mode DYS natif, ET une expérience de jeu magique. Aucun concurrent ne coche toutes ces cases.</div>
+    </div>
+
+    <h3>🎯 Les 3 cibles</h3>
+    <div class="grid-3">
+      <div class="card violet reveal">
+        <div class="card-icon">👧👦</div>
+        <h4>L'enfant (4–11 ans)</h4>
+        <p><strong>Priorité absolue.</strong> Il doit lancer Léo ou Luna de lui-même, sans que les parents insistent. L'engagement enfant = rétention famille.</p>
+      </div>
+      <div class="card or reveal" style="transition-delay:0.15s">
+        <div class="card-icon">👨‍👩‍👧</div>
+        <h4>Les parents</h4>
+        <p>Payeurs. Veulent voir la progression, recevoir des rapports clairs, avoir confiance dans l'alignement sur le programme de l'école de leur enfant.</p>
+      </div>
+      <div class="card rose reveal" style="transition-delay:0.3s">
+        <div class="card-icon">👩‍🏫</div>
+        <h4>Les enseignants</h4>
+        <p>Prescripteurs clés. Une enseignante de Stanislas qui recommande Léo & Luna = 25 familles abonnées immédiatement.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 — FONCTIONNALITÉS -->
+  <section id="fonctionnalites">
+    <div class="section-header reveal">
+      <div class="section-num">4</div>
+      <div class="section-title-wrap violet">
+        <h2>Fonctionnalités
+          <span class="h2-sub">Tout ce qui fait qu'un enfant revient chaque jour</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card violet reveal"><div class="card-icon">🗺️</div><h4>Carte du monde magique</h4><p>Le manoir de Léo & Luna à explorer : chaque module est une salle mystérieuse à débloquer. Progression visuelle, zones secrètes, coffres aux trésors.</p></div>
+      <div class="card or reveal" style="transition-delay:0.1s"><div class="card-icon">🏆</div><h4>Système de récompenses</h4><p>Étoiles, gemmes, badges, tenues exclusives pour Léo ou Luna. Tableau de bord gamifié. La motivation par la fierté, pas par la peur.</p></div>
+      <div class="card rose reveal" style="transition-delay:0.15s"><div class="card-icon">🎭</div><h4>Léo & Luna réagissent</h4><p>12 animations de personnage selon les réponses. Célèbrent, encouragent, consolent, dansent. Jamais indifférents. Jamais sévères.</p></div>
+      <div class="card vert reveal" style="transition-delay:0.2s"><div class="card-icon">🎵</div><h4>Ambiance sonore adaptative</h4><p>Musique qui s'intensifie en série de bonnes réponses. Effets sonores satisfaisants. Voix en français (Léo grave, Luna légère).</p></div>
+      <div class="card bleu reveal" style="transition-delay:0.25s"><div class="card-icon">⏱️</div><h4>Zéro pression · Zéro timer</h4><p>Pas de chronomètre. Pas de game over. Toujours une 2ᵉ chance. Inspiré Khan Academy Kids : bienveillance absolue.</p></div>
+      <div class="card violet reveal" style="transition-delay:0.3s"><div class="card-icon">👥</div><h4>Multi-profils familiaux</h4><p>Jusqu'à 4 enfants par compte familial. Chaque profil garde son personnage (Léo ou Luna), ses progrès, ses récompenses.</p></div>
+    </div>
+
+    <h3>📱 40+ formats de questions</h3>
+    <div class="grid-4">
+      <div class="card reveal"><div class="card-icon">👆</div><h4>QCM Kahoot-style</h4><p>4 couleurs, tactile</p></div>
+      <div class="card reveal" style="transition-delay:0.05s"><div class="card-icon">🔢</div><h4>Pavé numérique</h4><p>Saisie tactile</p></div>
+      <div class="card reveal" style="transition-delay:0.1s"><div class="card-icon">🎯</div><h4>Glisser-déposer</h4><p>Classer, associer</p></div>
+      <div class="card reveal" style="transition-delay:0.15s"><div class="card-icon">🖼️</div><h4>Compter des objets</h4><p>Images animées</p></div>
+      <div class="card reveal" style="transition-delay:0.2s"><div class="card-icon">✏️</div><h4>Tracé libre</h4><p>Dessiner des formes</p></div>
+      <div class="card reveal" style="transition-delay:0.25s"><div class="card-icon">🎙️</div><h4>Réponse orale</h4><p>Reconnaissance vocale</p></div>
+      <div class="card reveal" style="transition-delay:0.3s"><div class="card-icon">📐</div><h4>Construction</h4><p>Blocs manipulables</p></div>
+      <div class="card reveal" style="transition-delay:0.35s"><div class="card-icon">🧩</div><h4>Puzzle logique</h4><p>Suites, intrus</p></div>
+    </div>
+  </section>
+
+  <!-- SECTION 5 — PÉDAGOGIE -->
+  <section id="pedagogie">
+    <div class="section-header reveal">
+      <div class="section-num">5</div>
+      <div class="section-title-wrap vert">
+        <h2>Programme Pédagogique CP → CM2
+          <span class="h2-sub">Aligné Éducation Nationale · Enrichi Stanislas & Alsacienne</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="alert alert-v reveal">
+      <span class="alert-icon">📚</span>
+      <div><strong>Méthodes intégrées :</strong> Cap Maths · Méthode Singapour (Concret→Image→Abstrait) · Montessori · Courbe d'Ebbinghaus · Zone Proximale de Développement (Vygotsky) · Growth Mindset (Dweck).</div>
+    </div>
+
+    <div class="prog-year reveal">
+      <div class="prog-year-title" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">🐣 CP · 6 ans — Phase 1 déjà réalisée ✅</div>
+      <div class="mod-grid">
+        <div class="mod-card" style="border-color:#7c3aed"><div class="mc-label" style="color:#7c3aed">CP · Nombres</div><h5>Compter jusqu'à 100</h5><p>Dizaines, unités, valeur positionnelle</p></div>
+        <div class="mod-card" style="border-color:#f59e0b"><div class="mc-label" style="color:#f59e0b">CP · Calcul</div><h5>Additions jusqu'à 20</h5><p>Contextes Cap Maths, calcul mental</p></div>
+        <div class="mod-card" style="border-color:#10b981"><div class="mc-label" style="color:#10b981">CP · Calcul</div><h5>Compléments à 10</h5><p>Tableau de 10, visualisation</p></div>
+        <div class="mod-card" style="border-color:#3b82f6"><div class="mc-label" style="color:#3b82f6">CP · Comparaison</div><h5>Comparer & Ordonner</h5><p>Réglette, symboles &lt; &gt; =</p></div>
+        <div class="mod-card" style="border-color:#ec4899"><div class="mc-label" style="color:#ec4899">CP · Géométrie</div><h5>Formes de base</h5><p>Carré, rectangle, triangle, cercle</p></div>
+        <div class="mod-card" style="border-color:#ef4444"><div class="mc-label" style="color:#ef4444">CP · Mesures</div><h5>Longueurs & temps</h5><p>Unités usuelles, jours, mois</p></div>
+      </div>
+    </div>
+
+    <div class="prog-year reveal">
+      <div class="prog-year-title" style="background:linear-gradient(135deg,#ec4899,#f9a8d4)">🐥 CE1 — 7 ans</div>
+      <div class="mod-grid">
+        <div class="mod-card" style="border-color:#7c3aed"><div class="mc-label" style="color:#7c3aed">CE1</div><h5>Nombres jusqu'à 1000</h5><p>Centaines, écriture en lettres</p></div>
+        <div class="mod-card" style="border-color:#f59e0b"><div class="mc-label" style="color:#f59e0b">CE1</div><h5>Addition & Soustraction posées</h5><p>Algorithme, retenues</p></div>
+        <div class="mod-card" style="border-color:#10b981"><div class="mc-label" style="color:#10b981">CE1</div><h5>Tables de 2, 5, 10</h5><p>Jeux mémorisation adaptatifs</p></div>
+        <div class="mod-card" style="border-color:#3b82f6"><div class="mc-label" style="color:#3b82f6">CE1</div><h5>Fractions simples</h5><p>½ ¼ ⅓ visuels concrets</p></div>
+        <div class="mod-card" style="border-color:#ec4899"><div class="mc-label" style="color:#ec4899">CE1</div><h5>Monnaie</h5><p>Euros, centimes, rendu de monnaie</p></div>
+        <div class="mod-card" style="border-color:#ef4444"><div class="mc-label" style="color:#ef4444">CE1</div><h5>Géométrie</h5><p>Symétrie, quadrillage</p></div>
+      </div>
+    </div>
+
+    <div class="prog-year reveal">
+      <div class="prog-year-title" style="background:linear-gradient(135deg,#3b82f6,#60a5fa)">🐓 CE2 · CM1 · CM2 — 8 à 11 ans</div>
+      <div class="mod-grid">
+        <div class="mod-card" style="border-color:#7c3aed"><div class="mc-label" style="color:#7c3aed">CE2+</div><h5>Tables complètes ×1 à ×9</h5><p>Mémorisation jeu adaptatif</p></div>
+        <div class="mod-card" style="border-color:#f59e0b"><div class="mc-label" style="color:#f59e0b">CE2+</div><h5>Division euclidienne</h5><p>Quotient, reste, vérification</p></div>
+        <div class="mod-card" style="border-color:#10b981"><div class="mc-label" style="color:#10b981">CM1+</div><h5>Fractions & décimaux</h5><p>Comparaison, 4 opérations</p></div>
+        <div class="mod-card" style="border-color:#3b82f6"><div class="mc-label" style="color:#3b82f6">CM1+</div><h5>Aires & Périmètres</h5><p>Formes, unités, calcul</p></div>
+        <div class="mod-card" style="border-color:#ec4899"><div class="mc-label" style="color:#ec4899">CM2</div><h5>Proportionnalité</h5><p>Règle de 3, pourcentages</p></div>
+        <div class="mod-card" style="border-color:#ef4444"><div class="mc-label" style="color:#ef4444">CM2</div><h5>Statistiques</h5><p>Graphiques, moyenne</p></div>
+      </div>
+    </div>
+
+    <h3>Maturité pédagogique — Comparaison</h3>
+    <div class="reveal">
+      <div class="prog-bar-wrap">
+        <div class="pb-label"><span>Léo & Luna</span><span>95%</span></div>
+        <div class="pb-track"><div class="pb-fill" style="background:linear-gradient(90deg,#7c3aed,#ec4899)" data-width="95"></div></div>
+      </div>
+      <div class="prog-bar-wrap">
+        <div class="pb-label"><span>DreamBox Learning</span><span>82%</span></div>
+        <div class="pb-track"><div class="pb-fill" style="background:#3b82f6" data-width="82"></div></div>
+      </div>
+      <div class="prog-bar-wrap">
+        <div class="pb-label"><span>Khan Academy Kids</span><span>68%</span></div>
+        <div class="pb-track"><div class="pb-fill" style="background:#10b981" data-width="68"></div></div>
+      </div>
+      <div class="prog-bar-wrap">
+        <div class="pb-label"><span>Mathia</span><span>74%</span></div>
+        <div class="pb-track"><div class="pb-fill" style="background:#f59e0b" data-width="74"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6 — IA -->
+  <section id="ia">
+    <div class="section-header reveal">
+      <div class="section-num">6</div>
+      <div class="section-title-wrap violet">
+        <h2>Moteur IA Adaptatif
+          <span class="h2-sub">Propulsé par Claude · Plus intelligent que n'importe quel prof particulier</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="ia-flow reveal">
+      <h3 style="color:#c4b5fd;margin:0 0 2rem">🔄 La boucle adaptative de Léo & Luna</h3>
+      <div class="ia-step">
+        <div class="ia-num">1</div>
+        <div class="ia-content"><h5>📊 Collecte de 40+ signaux par question</h5><p>Temps de réponse, hésitations, ordre des clics, corrections spontanées, fatigue détectée. Tout est data.</p></div>
+      </div>
+      <div class="ia-step">
+        <div class="ia-num">2</div>
+        <div class="ia-content"><h5>🧠 Modèle cognitif de l'élève</h5><p>Profil unique : forces, lacunes, vitesse de traitement, style d'apprentissage, niveau de fatigue du moment.</p></div>
+      </div>
+      <div class="ia-step">
+        <div class="ia-num">3</div>
+        <div class="ia-content"><h5>⚡ Décision adaptative en &lt;200ms</h5><p>Algorithme bayésien : choisit la question avec 70-80% de chance de réussite — la "zone de flow" optimale.</p></div>
+      </div>
+      <div class="ia-step">
+        <div class="ia-num">4</div>
+        <div class="ia-content"><h5>🤖 Claude API — Génération personnalisée</h5><p>"7 + 8 ?" → Léo génère : "Luna a 7 étoiles roses et 8 étoiles bleues. Combien en a-t-elle ?" Jamais deux fois pareil.</p></div>
+      </div>
+      <div class="ia-step">
+        <div class="ia-num">5</div>
+        <div class="ia-content"><h5>🔍 Détection précoce des troubles DYS</h5><p>Patterns d'erreurs = alertes douces aux parents. Inversion systématique → dyscalculie ? Confusion → dyslexie ?</p></div>
+      </div>
+      <div class="ia-step" style="margin-bottom:0">
+        <div class="ia-num">6</div>
+        <div class="ia-content"><h5>📈 Rapports automatiques quotidiens</h5><p>Parents et enseignants reçoivent des insights actionnables, pas des données brutes incompréhensibles.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 7 — TECHNIQUE -->
+  <section id="technique">
+    <div class="section-header reveal">
+      <div class="section-num">7</div>
+      <div class="section-title-wrap bleu">
+        <h2>Architecture Technique
+          <span class="h2-sub">Stack moderne · Scalable · Sécurisé · 100% RGPD</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card violet reveal">
+        <div class="card-icon">⚡</div>
+        <h4>Frontend — Next.js 15</h4>
+        <p>React Server Components, TypeScript, Tailwind. PWA offline sur tablette. Animations Framer Motion.</p>
+        <div style="margin-top:0.8rem"><span class="tag tv">Next.js</span><span class="tag tv">TypeScript</span><span class="tag tv">PWA</span></div>
+      </div>
+      <div class="card or reveal" style="transition-delay:0.1s">
+        <div class="card-icon">🗄️</div>
+        <h4>Backend — Supabase</h4>
+        <p>PostgreSQL managée, Auth (Google/Apple), Storage médias, Real-time dashboard. Hébergé en France.</p>
+        <div style="margin-top:0.8rem"><span class="tag to">Supabase</span><span class="tag to">PostgreSQL</span><span class="tag to">RLS</span></div>
+      </div>
+      <div class="card vert reveal" style="transition-delay:0.2s">
+        <div class="card-icon">🤖</div>
+        <h4>IA — Claude API</h4>
+        <p>claude-sonnet-4-6 pour génération de questions et hints. Prompt caching pour réduire les coûts de 80%.</p>
+        <div style="margin-top:0.8rem"><span class="tag tg">Claude API</span><span class="tag tg">Caching</span></div>
+      </div>
+      <div class="card bleu reveal" style="transition-delay:0.1s">
+        <div class="card-icon">🔊</div>
+        <h4>Audio — Web Speech API</h4>
+        <p>TTS nativement FR (déjà implémenté). Voix de Léo (grave) et Luna (plus légère). Reconn. vocale optionnelle.</p>
+        <div style="margin-top:0.8rem"><span class="tag tb">TTS FR</span><span class="tag tb">Web Speech</span></div>
+      </div>
+      <div class="card rose reveal" style="transition-delay:0.2s">
+        <div class="card-icon">📊</div>
+        <h4>Analytics — PostHog</h4>
+        <p>Tracking comportemental anonymisé, funnel analysis, heat maps. 100% RGPD, sans cookie tiers.</p>
+        <div style="margin-top:0.8rem"><span class="tag tp">PostHog</span><span class="tag tp">RGPD</span></div>
+      </div>
+      <div class="card violet reveal" style="transition-delay:0.3s">
+        <div class="card-icon">☁️</div>
+        <h4>Déploiement — Vercel</h4>
+        <p>CDN mondial, déploiements CI/CD automatiques, edge functions pour l'IA. Région Europe (Frankfurt).</p>
+        <div style="margin-top:0.8rem"><span class="tag tv">Vercel</span><span class="tag tv">Edge</span><span class="tag tv">CI/CD</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 8 — PROFILS APPRENANTS -->
+  <section id="design">
+    <div class="section-header reveal">
+      <div class="section-num">8</div>
+      <div class="section-title-wrap rose">
+        <h2>Adaptation à Tous les Profils
+          <span class="h2-sub">DYS · HPI · Enfants en retard — chaque enfant mérite sa version de Léo & Luna</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="alert alert-p reveal">
+      <span class="alert-icon">🧠</span>
+      <div><strong>Notre philosophie :</strong> Il n'existe pas d'enfant "normal". Chaque cerveau est unique. Léo & Luna s'adaptent automatiquement à <strong>DYS, HPI et enfants en difficulté</strong> — sans que personne n'ait à cocher une case humiliante.</div>
+    </div>
+
+    <!-- TABLEAU DES PROFILS -->
+    <div class="profils-band reveal">
+      <div class="profil-bloc dys-bloc">
+        <div class="profil-header">
+          <span class="profil-emoji">🔡</span>
+          <div>
+            <div class="profil-label">1 enfant sur 5</div>
+            <div class="profil-titre">Troubles DYS</div>
+          </div>
+        </div>
+        <div class="profil-desc">Dyslexie · Dyscalculie · TDAH · Dyspraxie · Dysorthographie</div>
+        <div class="profil-tags">
+          <span class="ptag">Détection auto</span>
+          <span class="ptag">Mode DYS natif</span>
+          <span class="ptag">Alerte parents</span>
+        </div>
+      </div>
+      <div class="profil-bloc hpi-bloc">
+        <div class="profil-header">
+          <span class="profil-emoji">⚡</span>
+          <div>
+            <div class="profil-label">1 enfant sur 30</div>
+            <div class="profil-titre">HPI / Précoce</div>
+          </div>
+        </div>
+        <div class="profil-desc">Haut Potentiel Intellectuel · S'ennuie · Cherche des défis · Pense différemment</div>
+        <div class="profil-tags">
+          <span class="ptag ptag-or">Mode Génie</span>
+          <span class="ptag ptag-or">Sauts de niveaux</span>
+          <span class="ptag ptag-or">Défis experts</span>
+        </div>
+      </div>
+      <div class="profil-bloc retard-bloc">
+        <div class="profil-header">
+          <span class="profil-emoji">🌱</span>
+          <div>
+            <div class="profil-label">30% des CP/CE1</div>
+            <div class="profil-titre">En difficulté</div>
+          </div>
+        </div>
+        <div class="profil-desc">Lacunes installées · Confiance fragilisée · Besoin de répétition · Rythme plus lent</div>
+        <div class="profil-tags">
+          <span class="ptag ptag-vert">Micro-victoires</span>
+          <span class="ptag ptag-vert">Répétition douce</span>
+          <span class="ptag ptag-vert">Zéro pression</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DYS -->
+    <h3 style="margin-top:2.5rem">🔡 Profil DYS — Détail des adaptations</h3>
+    <div class="grid-2">
+      <div class="card vert reveal"><div class="card-icon">📖</div><h4>Dyslexie</h4><p>✓ Police OpenDyslexic · ✓ Fond crème · ✓ Interlignage 1.8 · ✓ Syllabes colorées · ✓ Léo ou Luna lit toute consigne à voix haute · ✓ Jamais de retour à la ligne forcé</p></div>
+      <div class="card bleu reveal" style="transition-delay:0.1s"><div class="card-icon">🔢</div><h4>Dyscalculie</h4><p>✓ Représentation toujours concrète avant l'abstrait · ✓ Doigts virtuels · ✓ Jamais de chronomètre · ✓ Règle graduée disponible · ✓ Couleurs différentes par valeur positionnelle</p></div>
+      <div class="card or reveal" style="transition-delay:0.2s"><div class="card-icon">⚡</div><h4>TDAH</h4><p>✓ Sessions 5-7 min maximum · ✓ Pauses actives (Léo ou Luna danse !) · ✓ Récompenses très fréquentes (toutes les 2 bonnes réponses) · ✓ Max 3 éléments à l'écran · ✓ Mode focus sans décor</p></div>
+      <div class="card violet reveal" style="transition-delay:0.3s"><div class="card-icon">🎯</div><h4>Dyspraxie</h4><p>✓ Zéro glisser-déposer obligatoire · ✓ Alternative QCM toujours dispo · ✓ Cibles larges &amp; espacées (48px min) · ✓ Mode clavier complet · ✓ Stabilisation curseur</p></div>
+    </div>
+    <div class="alert alert-g reveal" style="margin-top:1.5rem">
+      <span class="alert-icon">🔍</span>
+      <div><strong>Détection précoce automatique :</strong> L'IA analyse les patterns d'erreurs. Inversions systématiques → possible dyslexie. Confusions chiffres → possible dyscalculie. <strong>Une alerte douce est envoyée aux parents avec des ressources</strong>, jamais un diagnostic médical.</div>
+    </div>
+
+    <!-- HPI -->
+    <h3 style="margin-top:3rem">⚡ Profil HPI — Le "Mode Génie"</h3>
+    <div class="alert alert-o reveal">
+      <span class="alert-icon">💡</span>
+      <div><strong>Le problème HPI :</strong> Les enfants à haut potentiel s'ennuient en 3 minutes sur une plateforme standard et abandonnent. Ils ont besoin de complexité, de vitesse, et d'être challengés — pas d'être freinés.</div>
+    </div>
+    <div class="grid-3">
+      <div class="card or reveal">
+        <div class="card-icon">🚀</div>
+        <h4>Détection automatique</h4>
+        <p>Si l'enfant réussit 95%+ sur 20 questions consécutives en moins de 4 secondes par question, Léo ou Luna propose : <em>"Tu veux qu'on monte le niveau ?"</em></p>
+      </div>
+      <div class="card or reveal" style="transition-delay:0.15s">
+        <div class="card-icon">⏭️</div>
+        <h4>Sauts de niveaux</h4>
+        <p>Un enfant CP qui maîtrise les additions peut directement accéder aux soustractions CE1, multiplications CE2. L'algorithme suit le potentiel, pas l'âge.</p>
+      </div>
+      <div class="card or reveal" style="transition-delay:0.3s">
+        <div class="card-icon">🧩</div>
+        <h4>Défis experts</h4>
+        <p>Problèmes à étapes multiples, raisonnement logique, devinettes mathématiques, énigmes de Léo ou Luna. Une section "Labo des génies" débloquée.</p>
+      </div>
+      <div class="card or reveal" style="transition-delay:0.1s">
+        <div class="card-icon">⚡</div>
+        <h4>Vitesse adaptée</h4>
+        <p>Moins de feedbacks répétitifs. Animations accélérées. Questions enchaînées plus vite. Le HPI n'aime pas attendre que Léo finisse sa danse de victoire.</p>
+      </div>
+      <div class="card or reveal" style="transition-delay:0.25s">
+        <div class="card-icon">🏆</div>
+        <h4>Badges exclusifs</h4>
+        <p>"Génie des maths", "Voyageur temporel" (avance de 2 ans), "Maître du Labo". Récompenses pensées pour un enfant qui a besoin d'être reconnu à sa juste valeur.</p>
+      </div>
+      <div class="card or reveal" style="transition-delay:0.35s">
+        <div class="card-icon">📊</div>
+        <h4>Rapport HPI pour les parents</h4>
+        <p>"Votre enfant progresse 3× plus vite que la moyenne de son âge. Voici les ressources pour l'accompagner." Orientations vers psychologue scolaire si besoin.</p>
+      </div>
+    </div>
+
+    <!-- ENFANTS EN RETARD -->
+    <h3 style="margin-top:3rem">🌱 Profil En difficulté — La remédiation bienveillante</h3>
+    <div class="alert alert-v reveal">
+      <span class="alert-icon">❤️</span>
+      <div><strong>Notre conviction :</strong> Aucun enfant ne choisit d'être en difficulté. L'échec scolaire est une blessure. Léo & Luna ne jugent jamais, ne montrent jamais de note rouge, et célèbrent chaque micro-victoire comme une médaille olympique.</div>
+    </div>
+    <div class="grid-2">
+      <div class="card violet reveal">
+        <div class="card-icon">🔄</div>
+        <h4>Répétition espacée (Ebbinghaus)</h4>
+        <p>Les notions ratées sont réintroduites intelligemment : après 10 min, puis 1 jour, puis 3 jours, puis 7 jours. L'enfant re-voit les mêmes notions sans s'en rendre compte — et cette fois il réussit.</p>
+      </div>
+      <div class="card violet reveal" style="transition-delay:0.1s">
+        <div class="card-icon">🪜</div>
+        <h4>Décomposition ultra-fine</h4>
+        <p>"3 + 4" trop dur ? L'IA décompose en "3 + 1 = ?", puis "4 + 1 = ?", puis "3 + 2 = ?". Elle remonte aussi loin que nécessaire — jusqu'aux bases de la maternelle si besoin, sans jamais humilier.</p>
+      </div>
+      <div class="card violet reveal" style="transition-delay:0.2s">
+        <div class="card-icon">🎉</div>
+        <h4>Micro-victoires amplifiées</h4>
+        <p>Pour un enfant en difficulté, une bonne réponse = fête maximale. Confettis, Léo ou Luna qui danse 3 secondes de plus, message du type : "TU L'AS EU ! Je savais que tu pouvais !"</p>
+      </div>
+      <div class="card violet reveal" style="transition-delay:0.3s">
+        <div class="card-icon">🛡️</div>
+        <h4>Zéro honte, zéro note</h4>
+        <p>Jamais de score global affiché. Jamais de "tu as 4/10". Seulement des étoiles gagnées — jamais perdues. Les erreurs sont appelées "indices pour Luna" pas des fautes.</p>
+      </div>
+      <div class="card violet reveal" style="transition-delay:0.15s">
+        <div class="card-icon">🔍</div>
+        <h4>Diagnostic de lacunes</h4>
+        <p>L'IA cartographie les trous : "Léa ne maîtrise pas la décomposition dizaines/unités — base de tout le reste." Rapport précis aux parents et enseignants pour agir ciblé.</p>
+      </div>
+      <div class="card violet reveal" style="transition-delay:0.25s">
+        <div class="card-icon">⏰</div>
+        <h4>Rythme lent accepté</h4>
+        <p>Pas de pression de vitesse. Pas de barre de temps. L'enfant a 30 secondes, 2 minutes ou 5 minutes pour répondre — Léo ou Luna attend patiemment, sans soupirer.</p>
+      </div>
+    </div>
+
+    <!-- RÉSUMÉ COMPARATIF -->
+    <h3 style="margin-top:3rem">📊 Vue d'ensemble — Qui fait quoi pour qui</h3>
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr><th>Fonctionnalité</th><th>🔡 DYS</th><th>⚡ HPI</th><th>🌱 En difficulté</th><th>😊 Tous</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Détection automatique du profil</td><td class="oui">✅</td><td class="oui">✅</td><td class="oui">✅</td><td class="oui">✅</td></tr>
+          <tr><td>Algorithme qui suit le niveau réel</td><td class="oui">✅</td><td class="oui">✅ ×3</td><td class="oui">✅ lent</td><td class="oui">✅</td></tr>
+          <tr><td>Zéro chronomètre</td><td class="oui">✅</td><td class="non">⚡ Optionnel</td><td class="oui">✅</td><td class="oui">✅</td></tr>
+          <tr><td>Lecture vocale des consignes</td><td class="oui">✅ Auto</td><td class="non">Sur demande</td><td class="oui">✅ Auto</td><td class="non">Sur demande</td></tr>
+          <tr><td>Saut de niveaux</td><td class="non">❌</td><td class="oui">✅ ×3</td><td class="non">❌</td><td class="non">—</td></tr>
+          <tr><td>Répétition espacée renforcée</td><td class="oui">✅</td><td class="non">—</td><td class="oui">✅ ×2</td><td class="non">—</td></tr>
+          <tr><td>Alerte parents personnalisée</td><td class="oui">✅ DYS</td><td class="oui">✅ HPI</td><td class="oui">✅ Soutien</td><td class="non">—</td></tr>
+          <tr><td>Badges exclusifs</td><td class="oui">✅ DYS</td><td class="oui">✅ Génie</td><td class="oui">✅ Héros</td><td class="oui">✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SECTION 9 — DASHBOARD -->
+  <section id="dashboard">
+    <div class="section-header reveal">
+      <div class="section-num">9</div>
+      <div class="section-title-wrap bleu">
+        <h2>Dashboard Enseignant & Espace Parent
+          <span class="h2-sub">Des insights clairs pour accompagner chaque enfant</span>
+        </h2>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div>
+        <h3>👩‍🏫 Dashboard Enseignant</h3>
+        <div class="card violet reveal"><h4>Vue classe en temps réel</h4><p>Carré vert (en avance) · orange (dans la moyenne) · rouge (à surveiller). Un coup d'œil = état de la classe entière.</p></div>
+        <div class="card reveal" style="margin-top:1rem;transition-delay:.1s"><h4>📊 Rapports hebdo automatiques</h4><p>PDF généré chaque lundi : progression classe, points faibles collectifs, élèves prioritaires. Envoi email automatique.</p></div>
+        <div class="card reveal" style="margin-top:1rem;transition-delay:.2s"><h4>🎯 Assignation de missions</h4><p>L'enseignant assigne un module à un élève ou toute la classe, avec une date limite. Notification via Léo ou Luna.</p></div>
+      </div>
+      <div>
+        <h3>👨‍👩‍👧 Espace Parent</h3>
+        <div class="card or reveal"><h4>Rapport quotidien 19h</h4><p>"Emma a fait 12 min avec Luna aujourd'hui. Elle a réussi les compléments à 10 ! ⭐ À travailler : additions à 2 chiffres."</p></div>
+        <div class="card reveal" style="margin-top:1rem;transition-delay:.1s"><h4>📈 Graphique de progression</h4><p>Courbe des étoiles sur 30 jours. Comparaison avec les objectifs du programme. Simple, pas intimidant.</p></div>
+        <div class="card reveal" style="margin-top:1rem;transition-delay:.2s"><h4>🔔 Alertes intelligentes</h4><p>"Luna n'a pas été lancée depuis 5 jours ☁️" ou "Emma montre des difficultés persistantes — un soutien pourrait aider."</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 10 — MODÈLE ÉCO -->
+  <section id="modele">
+    <div class="section-header reveal">
+      <div class="section-num">10</div>
+      <div class="section-title-wrap or">
+        <h2>Modèle Économique
+          <span class="h2-sub">Freemium → Famille → École → Premium</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="pricing-grid">
+      <div class="pc reveal">
+        <div class="pc-icon">🆓</div>
+        <div class="pc-name">Découverte</div>
+        <div class="pc-price">0€ <span class="sub">/toujours</span></div>
+        <div class="pc-alt">Sans carte bancaire</div>
+        <ul><li>3 modules CP gratuits à vie</li><li>1 profil enfant</li><li>Choix Léo ou Luna</li><li>Rapport hebdo simplifié</li></ul>
+      </div>
+      <div class="pc featured reveal" style="transition-delay:.1s">
+        <div class="pc-badge">⭐ Populaire</div>
+        <div class="pc-icon">👨‍👩‍👧</div>
+        <div class="pc-name">Famille</div>
+        <div class="pc-price">9,99€ <span class="sub">/mois</span></div>
+        <div class="pc-alt">89€/an — soit 7,40€/mois</div>
+        <ul><li>Tous modules CP → CM2</li><li>Jusqu'à 4 enfants</li><li>Léo ET Luna disponibles</li><li>IA adaptative complète</li><li>Dashboard parent complet</li><li>Mode DYS avancé</li><li>Accès offline (PWA)</li></ul>
+      </div>
+      <div class="pc reveal" style="transition-delay:.2s">
+        <div class="pc-icon">🏫</div>
+        <div class="pc-name">École</div>
+        <div class="pc-price">15€ <span class="sub">/élève/an</span></div>
+        <div class="pc-alt">Min. 20 élèves · Facturation annuelle</div>
+        <ul><li>Tout Famille +</li><li>Dashboard enseignant</li><li>Rapports de classe auto</li><li>Assignation de missions</li><li>Bibliothèque pédagogique</li><li>Formation enseignants (1h)</li></ul>
+      </div>
+      <div class="pc reveal" style="transition-delay:.3s">
+        <div class="pc-icon">🏆</div>
+        <div class="pc-name">Premium</div>
+        <div class="pc-price">25€ <span class="sub">/élève/an</span></div>
+        <div class="pc-alt">Stanislas · Alsacienne · Gerson…</div>
+        <ul><li>Tout École +</li><li>Contenu aligné programme école</li><li>Co-construction de modules</li><li>Dashboard direction</li><li>Account manager dédié</li><li>Marque blanche possible</li></ul>
+      </div>
+    </div>
+
+    <div class="stats-band reveal" style="margin-top:2.5rem">
+      <div class="stat-item"><span class="stat-num counter" data-target="500">0</span><div class="stat-label">Familles An 1 → 50k€/an</div></div>
+      <div class="stat-item"><span class="stat-num counter rose-num" data-target="5">0</span><div class="stat-label">Écoles pilotes → 15k€/an</div></div>
+      <div class="stat-item"><span class="stat-num counter" data-target="5000">0</span><div class="stat-label">Familles An 2 → 500k€/an</div></div>
+      <div class="stat-item"><span class="stat-num counter rose-num" data-target="50">0</span><div class="stat-label">Écoles An 2 → 150k€/an</div></div>
+      <div class="stat-item"><span class="stat-num counter" data-target="2">0</span><span class="stat-num">M€</span><div class="stat-label">ARR réaliste An 3</div></div>
+    </div>
+  </section>
+
+  <!-- SECTION 11 — ROADMAP -->
+  <section id="roadmap">
+    <div class="section-header reveal">
+      <div class="section-num">11</div>
+      <div class="section-title-wrap violet">
+        <h2>Roadmap
+          <span class="h2-sub">De aujourd'hui à 500 000 élèves</span>
+        </h2>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-dot done">✓</div>
+        <div class="tl-phase">Phase 0 · Juin 2026 · RÉALISÉ</div>
+        <div class="tl-title">🐰 Prototype Léo CP Maths</div>
+        <div class="tl-desc">6 modules CP opérationnels, Léo animé, boutons Kahoot, voix française, étoiles burst, feedback magique. Fichier HTML standalone testé.</div>
+        <div><span class="tag tg">✅ Livré</span><span class="tag tv">6 modules CP</span><span class="tag tv">HTML/CSS/JS</span></div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-dot violet">1</div>
+        <div class="tl-phase">Phase 1 · Juillet–Août 2026</div>
+        <div class="tl-title">🐇 Ajout Luna + Moteur Adaptatif</div>
+        <div class="tl-desc">Création personnage Luna, choix du personnage au démarrage, algorithme adaptation (taux réussite), profils multi-enfants en localStorage.</div>
+        <div><span class="tag to">En attente</span><span class="tag tp">Luna</span><span class="tag tv">Adaptation</span><span class="tag tv">Multi-profils</span></div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-dot rose">2</div>
+        <div class="tl-phase">Phase 2 · Sept–Oct 2026 (après projet LOV/Denis)</div>
+        <div class="tl-title">🚀 Plateforme Web + Claude IA</div>
+        <div class="tl-desc">Migration Next.js + Supabase. Intégration Claude API pour génération de questions personnalisées. Comptes parents/enseignants. CE1 ajouté.</div>
+        <div><span class="tag tr">Planifié</span><span class="tag tv">Next.js</span><span class="tag tg">Claude API</span><span class="tag tb">Supabase</span></div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-dot bleu">3</div>
+        <div class="tl-phase">Phase 3 · Nov–Déc 2026</div>
+        <div class="tl-title">🏫 Pilote Stanislas & Alsacienne</div>
+        <div class="tl-desc">Dashboard enseignant complet. Test avec 50-100 élèves réels. Collecte feedback intensif. Validation pédagogique par enseignants.</div>
+        <div><span class="tag tr">Planifié</span><span class="tag to">B2B pilote</span><span class="tag to">Dashboard prof</span></div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-dot or">4</div>
+        <div class="tl-phase">Phase 4 · Janvier 2027</div>
+        <div class="tl-title">💰 Lancement commercial CP → CM2</div>
+        <div class="tl-desc">Abonnements familles ouverts. Programme CP→CM2 complet. Mode DYS certifié. PWA offline. Campagne réseaux sociaux Paris.</div>
+        <div><span class="tag tr">Vision</span><span class="tag tg">Go-to-market</span><span class="tag tv">CP→CM2</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 12 — KPIS -->
+  <section id="kpis">
+    <div class="section-header reveal">
+      <div class="section-num">12</div>
+      <div class="section-title-wrap vert">
+        <h2>KPIs & Mesures de Succès
+          <span class="h2-sub">L'enfant d'abord, le business ensuite</span>
+        </h2>
+      </div>
+    </div>
+
+    <h3>📊 Indicateurs enfant (le plus important)</h3>
+    <div class="kpi-grid">
+      <div class="kpi-card reveal"><span class="kpi-val counter" data-target="85">0</span><span class="kpi-val" style="font-size:1.5rem">%</span><div class="kpi-label">Taux retour J+1</div><div class="kpi-horizon">Objectif An 1</div></div>
+      <div class="kpi-card or reveal" style="transition-delay:.1s"><span class="kpi-val counter" data-target="12">0</span><span class="kpi-val" style="font-size:1.5rem">min</span><div class="kpi-label">Session moyenne</div><div class="kpi-horizon">Idéal CP : 8-15 min</div></div>
+      <div class="kpi-card rose reveal" style="transition-delay:.2s"><span class="kpi-val">+2</span><span class="kpi-val" style="font-size:1rem">mois</span><div class="kpi-label">Avance niveau</div><div class="kpi-horizon">Après 60 sessions</div></div>
+      <div class="kpi-card vert reveal" style="transition-delay:.3s"><span class="kpi-val">4,8</span><span class="kpi-val" style="font-size:1rem">/5</span><div class="kpi-label">Satisfaction enfant</div><div class="kpi-horizon">Mesure hebdo</div></div>
+    </div>
+
+    <h3 style="margin-top:2.5rem">💼 Indicateurs business</h3>
+    <div class="kpi-grid">
+      <div class="kpi-card reveal"><span class="kpi-val">&lt;5%</span><div class="kpi-label">Churn mensuel</div><div class="kpi-horizon">vs 12% marché</div></div>
+      <div class="kpi-card or reveal" style="transition-delay:.1s"><span class="kpi-val counter" data-target="40">0</span><span class="kpi-val" style="font-size:1.5rem">%</span><div class="kpi-label">Conversion gratuit→payant</div><div class="kpi-horizon">Objectif An 1</div></div>
+      <div class="kpi-card rose reveal" style="transition-delay:.2s"><span class="kpi-val counter" data-target="72">0</span><div class="kpi-label">NPS Score</div><div class="kpi-horizon">Cible (Duolingo=65)</div></div>
+      <div class="kpi-card vert reveal" style="transition-delay:.3s"><span class="kpi-val">18€</span><div class="kpi-label">CAC</div><div class="kpi-horizon">Bouche-à-oreille focus</div></div>
+    </div>
+  </section>
+
+  <!-- CONCLUSION -->
+  <div class="conclusion reveal">
+    <div style="font-size:4rem;margin-bottom:1.5rem">🐰🐇</div>
+    <h2>Léo & Luna sont prêts à changer l'éducation</h2>
+    <p>Le prototype fonctionne. Le marché est là. La technologie existe. Le duo inclusif est né.<br>Il ne reste qu'une chose à faire : <strong style="color:#c4b5fd">construire ensemble.</strong></p>
+    <div class="conc-tags">
+      <span class="conc-tag">🚀 Prototype opérationnel</span>
+      <span class="conc-tag">👧👦 Inclusif garçons & filles</span>
+      <span class="conc-tag">🤖 IA Claude intégrée</span>
+      <span class="conc-tag">♿ 100% DYS</span>
+      <span class="conc-tag">💰 Modèle éco. prouvé</span>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <strong>Léo & Luna — Plateforme EdTech</strong> · Cahier des Charges v1.0 · Juin 2026<br>
+  Document confidentiel — Ne pas diffuser sans autorisation<br><br>
+  Fait avec ❤️ pour que chaque enfant — garçon ou fille — ait envie d'apprendre
+</footer>
+
+<script>
+// ======= ÉTOILES COUVERTURE =======
+(function() {
+  const wrap = document.getElementById('cover-stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = 1 + Math.random() * 2.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${2+Math.random()*4}s;animation-delay:-${Math.random()*6}s`;
+    wrap.appendChild(s);
+  }
+})();
+
+// ======= NAV ACTIVE =======
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('nav a');
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  links.forEach(l => { l.classList.toggle('active', l.getAttribute('href') === '#' + current); });
+});
+
+// ======= REVEAL ON SCROLL =======
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Déclencher les progress bars
+      e.target.querySelectorAll('.pb-fill[data-width]').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.width + '%'; }, 200);
+      });
+      // Déclencher les compteurs
+      e.target.querySelectorAll('.counter[data-target]').forEach(startCounter);
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+// ======= COMPTEURS ANIMÉS =======
+function startCounter(el) {
+  const target = parseFloat(el.dataset.target);
+  const isDecimal = String(target).includes('.');
+  const duration = 1800;
+  const start = performance.now();
+  const update = (now) => {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const val = target * eased;
+    el.textContent = isDecimal ? val.toFixed(1) : Math.floor(val).toLocaleString('fr-FR');
+    if (progress < 1) requestAnimationFrame(update);
+    else el.textContent = isDecimal ? target.toFixed(1) : target.toLocaleString('fr-FR');
+  };
+  requestAnimationFrame(update);
+}
+
+// ======= PARTICLES CANVAS (fond global) =======
+const canvas = document.getElementById('canvas-bg');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.r = 0.5 + Math.random() * 1.5;
+    this.speed = 0.2 + Math.random() * 0.4;
+    this.angle = Math.random() * Math.PI * 2;
+    this.opacity = 0.1 + Math.random() * 0.3;
+    this.color = ['#a78bfa','#f9a8d4','#93c5fd','#fcd34d'][Math.floor(Math.random()*4)];
+  }
+  update() {
+    this.x += Math.cos(this.angle) * this.speed;
+    this.y += Math.sin(this.angle) * this.speed;
+    this.angle += 0.005;
+    if (this.x < -5 || this.x > canvas.width+5 || this.y < -5 || this.y > canvas.height+5) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+    ctx.fillStyle = this.color;
+    ctx.globalAlpha = this.opacity;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+let animRunning = false;
+function animLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  ctx.globalAlpha = 1;
+  if (animRunning) requestAnimationFrame(animLoop);
+}
+
+// Démarrer les particules quand on quitte la couverture
+const coverObs = new IntersectionObserver(entries => {
+  const leaving = !entries[0].isIntersecting;
+  if (leaving && !animRunning) {
+    animRunning = true;
+    canvas.style.opacity = '0.4';
+    animLoop();
+  } else if (!leaving) {
+    animRunning = false;
+    canvas.style.opacity = '0';
+  }
+}, { threshold: 0.1 });
+coverObs.observe(document.querySelector('.cover'));
+
+// ======= SMOOTH SCROLL =======
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ======= HOVER PARALLAX COVER =======
+document.querySelector('.cover').addEventListener('mousemove', e => {
+  const orbs = document.querySelectorAll('.orb');
+  const cx = (e.clientX / window.innerWidth  - 0.5) * 20;
+  const cy = (e.clientY / window.innerHeight - 0.5) * 20;
+  orbs.forEach((o, i) => {
+    const factor = (i + 1) * 0.4;
+    o.style.transform = `translate(${cx*factor}px, ${cy*factor}px)`;
+  });
+});
+</script>
+</body>
+</html>
